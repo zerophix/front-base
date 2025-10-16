@@ -1,0 +1,885 @@
+{
+  "timestamp": "2025-10-16T12:16:23.094Z",
+  "summary": {
+    "totalFiles": 97,
+    "optimizedFiles": 88,
+    "issuesFound": 45,
+    "averageScore": 94.0721649484536
+  },
+  "analyses": [
+    {
+      "path": "app/home/page.tsx",
+      "size": 5162,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        },
+        {
+          "type": "missing-usecallback",
+          "severity": "low",
+          "message": "存在内联函数但未使用useCallback优化"
+        },
+        {
+          "type": "missing-key",
+          "severity": "high",
+          "message": "列表渲染缺少key属性"
+        },
+        {
+          "type": "inline-objects",
+          "severity": "low",
+          "message": "存在内联对象可能导致不必要的重渲染"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        },
+        {
+          "type": "add-usecallback",
+          "description": "对事件处理函数使用useCallback",
+          "code": "const handleClick = useCallback(() => { /* handler */ }, [deps]);"
+        },
+        {
+          "type": "add-key",
+          "description": "为列表项添加唯一key属性",
+          "code": "items.map((item, index) => <Item key={item.id || index} />)"
+        },
+        {
+          "type": "extract-objects",
+          "description": "提取内联对象到组件外部或使用useMemo",
+          "code": "const styles = useMemo(() => ({ color: \"red\" }), []);"
+        }
+      ],
+      "score": 55
+    },
+    {
+      "path": "app/project/management-overview/page.tsx",
+      "size": 1146,
+      "issues": [
+        {
+          "type": "missing-key",
+          "severity": "high",
+          "message": "列表渲染缺少key属性"
+        },
+        {
+          "type": "inline-objects",
+          "severity": "low",
+          "message": "存在内联对象可能导致不必要的重渲染"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-key",
+          "description": "为列表项添加唯一key属性",
+          "code": "items.map((item, index) => <Item key={item.id || index} />)"
+        },
+        {
+          "type": "extract-objects",
+          "description": "提取内联对象到组件外部或使用useMemo",
+          "code": "const styles = useMemo(() => ({ color: \"red\" }), []);"
+        }
+      ],
+      "score": 75
+    },
+    {
+      "path": "src/components/ErrorBoundary.tsx",
+      "size": 4105,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        },
+        {
+          "type": "inline-objects",
+          "severity": "low",
+          "message": "存在内联对象可能导致不必要的重渲染"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        },
+        {
+          "type": "extract-objects",
+          "description": "提取内联对象到组件外部或使用useMemo",
+          "code": "const styles = useMemo(() => ({ color: \"red\" }), []);"
+        }
+      ],
+      "score": 80
+    },
+    {
+      "path": "src/components/common/EditableTable/EditableTable.tsx",
+      "size": 6958,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        },
+        {
+          "type": "inline-objects",
+          "severity": "low",
+          "message": "存在内联对象可能导致不必要的重渲染"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        },
+        {
+          "type": "extract-objects",
+          "description": "提取内联对象到组件外部或使用useMemo",
+          "code": "const styles = useMemo(() => ({ color: \"red\" }), []);"
+        }
+      ],
+      "score": 80
+    },
+    {
+      "path": "app/equipment/calibration/page.tsx",
+      "size": 6406,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        },
+        {
+          "type": "inline-objects",
+          "severity": "low",
+          "message": "存在内联对象可能导致不必要的重渲染"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        },
+        {
+          "type": "extract-objects",
+          "description": "提取内联对象到组件外部或使用useMemo",
+          "code": "const styles = useMemo(() => ({ color: \"red\" }), []);"
+        }
+      ],
+      "score": 80
+    },
+    {
+      "path": "app/personnel/list/page.tsx",
+      "size": 3587,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        },
+        {
+          "type": "inline-objects",
+          "severity": "low",
+          "message": "存在内联对象可能导致不必要的重渲染"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        },
+        {
+          "type": "extract-objects",
+          "description": "提取内联对象到组件外部或使用useMemo",
+          "code": "const styles = useMemo(() => ({ color: \"red\" }), []);"
+        }
+      ],
+      "score": 80
+    },
+    {
+      "path": "app/personnel/registration/page.tsx",
+      "size": 10116,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        },
+        {
+          "type": "inline-objects",
+          "severity": "low",
+          "message": "存在内联对象可能导致不必要的重渲染"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        },
+        {
+          "type": "extract-objects",
+          "description": "提取内联对象到组件外部或使用useMemo",
+          "code": "const styles = useMemo(() => ({ color: \"red\" }), []);"
+        }
+      ],
+      "score": 80
+    },
+    {
+      "path": "app/project/subcontract-sample-list/page.tsx",
+      "size": 7929,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        },
+        {
+          "type": "inline-objects",
+          "severity": "low",
+          "message": "存在内联对象可能导致不必要的重渲染"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        },
+        {
+          "type": "extract-objects",
+          "description": "提取内联对象到组件外部或使用useMemo",
+          "code": "const styles = useMemo(() => ({ color: \"red\" }), []);"
+        }
+      ],
+      "score": 80
+    },
+    {
+      "path": "app/quality/qualified-supplier-directory/page.tsx",
+      "size": 8406,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        },
+        {
+          "type": "inline-objects",
+          "severity": "low",
+          "message": "存在内联对象可能导致不必要的重渲染"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        },
+        {
+          "type": "extract-objects",
+          "description": "提取内联对象到组件外部或使用useMemo",
+          "code": "const styles = useMemo(() => ({ color: \"red\" }), []);"
+        }
+      ],
+      "score": 80
+    },
+    {
+      "path": "app/data/statistics-analysis/page.tsx",
+      "size": 2987,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/equipment/calibration-record/page.tsx",
+      "size": 2980,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/equipment/new/page.tsx",
+      "size": 2011,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/equipment/purchase-apply/page.tsx",
+      "size": 2062,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/personnel/training-record/page.tsx",
+      "size": 3490,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/project/contract-registration/page.tsx",
+      "size": 6663,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/project/subcontract-application/page.tsx",
+      "size": 4573,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/project/subcontract-settlement/page.tsx",
+      "size": 6045,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/project/subcontract-technical-requirements/page.tsx",
+      "size": 3385,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/project/task-management/page.tsx",
+      "size": 3328,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/quality/contract-review/page.tsx",
+      "size": 4298,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/quality/doc-borrow-register/page.tsx",
+      "size": 3885,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/quality/doc-effectiveness-check/page.tsx",
+      "size": 3591,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/quality/doc-issue-approval/page.tsx",
+      "size": 2966,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/quality/doc-issue-approve/page.tsx",
+      "size": 2134,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/quality/doc-modification-approval/page.tsx",
+      "size": 2913,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/quality/doc-retention-record/page.tsx",
+      "size": 3511,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/quality/nonconformity/page.tsx",
+      "size": 2145,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/quality/sample-verification/page.tsx",
+      "size": 4940,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/quality/std-register/page.tsx",
+      "size": 2209,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/quality/supplier-evaluation/components/EvaluationStandardTips/EvaluationStandardTips.tsx",
+      "size": 3423,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/quality/supplier-evaluation/page.tsx",
+      "size": 5096,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/quality/technical-standard-validity-report/page.tsx",
+      "size": 3552,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/quality/testing-commission-contract/page.tsx",
+      "size": 3294,
+      "issues": [
+        {
+          "type": "missing-memo",
+          "severity": "medium",
+          "message": "大型组件未使用React.memo优化"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "add-memo",
+          "description": "使用React.memo包装组件",
+          "code": "export const ComponentName = React.memo(ComponentNameImpl);"
+        }
+      ],
+      "score": 85
+    },
+    {
+      "path": "app/records/risk-control-form/page.tsx",
+      "size": 1473,
+      "issues": [
+        {
+          "type": "inline-objects",
+          "severity": "low",
+          "message": "存在内联对象可能导致不必要的重渲染"
+        }
+      ],
+      "optimizations": [
+        {
+          "type": "extract-objects",
+          "description": "提取内联对象到组件外部或使用useMemo",
+          "code": "const styles = useMemo(() => ({ color: \"red\" }), []);"
+        }
+      ],
+      "score": 95
+    },
+    {
+      "path": "src/components/templates/ModuleHomePage.tsx",
+      "size": 1212,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    },
+    {
+      "path": "app/AntdRegistry.tsx",
+      "size": 935,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    },
+    {
+      "path": "app/PerformanceMonitor.tsx",
+      "size": 343,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    },
+    {
+      "path": "app/data/detection-objects/page.tsx",
+      "size": 1516,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    },
+    {
+      "path": "app/data/detection-params/page.tsx",
+      "size": 1554,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    },
+    {
+      "path": "app/data/page.tsx",
+      "size": 205,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    },
+    {
+      "path": "app/data/parameter-code/page.tsx",
+      "size": 1327,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    },
+    {
+      "path": "app/equipment/acceptance/page.tsx",
+      "size": 1744,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    },
+    {
+      "path": "app/equipment/borrow/page.tsx",
+      "size": 1629,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    },
+    {
+      "path": "app/equipment/device/page.tsx",
+      "size": 1795,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    },
+    {
+      "path": "app/equipment/drift-plan/page.tsx",
+      "size": 1588,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    },
+    {
+      "path": "app/equipment/function-plan/page.tsx",
+      "size": 1607,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    },
+    {
+      "path": "app/equipment/function-record/page.tsx",
+      "size": 1443,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    },
+    {
+      "path": "app/equipment/maintenance-plan/page.tsx",
+      "size": 1814,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    },
+    {
+      "path": "app/equipment/maintenance-record/page.tsx",
+      "size": 1912,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    },
+    {
+      "path": "app/equipment/page.tsx",
+      "size": 216,
+      "issues": [],
+      "optimizations": [],
+      "score": 100
+    }
+  ],
+  "optimizationTypes": {
+    "add-memo": 32,
+    "add-usecallback": 1,
+    "add-key": 2,
+    "extract-objects": 10
+  }
+}

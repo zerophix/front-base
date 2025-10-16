@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-10-16T12:25:40.912Z",
+  "summary": {
+    "totalFiles": 32,
+    "optimizedFiles": 0,
+    "skippedFiles": 32,
+    "errors": 0,
+    "optimizations": []
+  },
+  "recommendations": [
+    "测试memo优化后的组件性能",
+    "监控渲染次数的变化",
+    "考虑为复杂props添加自定义比较函数"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "timestamp": "2025-10-16T12:14:02.928Z",
+  "summary": {
+    "totalFiles": 210,
+    "totalSizeKB": "665.56",
+    "largeFiles": 40,
+    "complexFiles": 82,
+    "dependencies": 31
+  },
+  "routes": {
+    "lazyImports": 0,
+    "dynamicImports": 0,
+    "hasLazyLoading": false
+  },
+  "optimization": {
+    "memoUsage": 8,
+    "useMemoUsage": 10,
+    "useCallbackUsage": 15,
+    "totalComponents": 97
+  },
+  "recommendations": [
+    {
+      "type": "warning",
+      "category": "file-size",
+      "message": "发现 40 个大文件，建议拆分或优化"
+    },
+    {
+      "type": "warning",
+      "category": "complexity",
+      "message": "发现 82 个复杂文件，建议重构"
+    },
+    {
+      "type": "suggestion",
+      "category": "optimization",
+      "message": "React.memo 使用率较低 (8.2%)，建议优化组件渲染"
+    },
+    {
+      "type": "warning",
+      "category": "lazy-loading",
+      "message": "未检测到懒加载配置，建议实现代码分割"
+    }
+  ]
+}

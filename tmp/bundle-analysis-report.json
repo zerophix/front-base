@@ -1,0 +1,270 @@
+{
+  "timestamp": "2025-10-16T12:15:09.183Z",
+  "dependencies": [
+    {
+      "name": "next",
+      "version": "15.5.4",
+      "estimatedSizeKB": "67828.12",
+      "description": "The React Framework"
+    },
+    {
+      "name": "antd",
+      "version": "5.27.4",
+      "estimatedSizeKB": "27313.07",
+      "description": "An enterprise-class UI design language and React components implementation"
+    },
+    {
+      "name": "@ant-design/icons",
+      "version": "6.1.0",
+      "estimatedSizeKB": "9509.46",
+      "description": "No description"
+    },
+    {
+      "name": "@modelcontextprotocol/sdk",
+      "version": "^1.20.0",
+      "estimatedSizeKB": "7747.05",
+      "description": "Model Context Protocol implementation for TypeScript"
+    },
+    {
+      "name": "react-dom",
+      "version": "18.3.1",
+      "estimatedSizeKB": "4404.30",
+      "description": "React package for working with the DOM."
+    },
+    {
+      "name": "styled-components",
+      "version": "6.1.19",
+      "estimatedSizeKB": "825.38",
+      "description": "CSS for the <Component> Age. Style components your way with speed, strong typing, and flexibility."
+    },
+    {
+      "name": "dayjs",
+      "version": "^1.11.18",
+      "estimatedSizeKB": "560.28",
+      "description": "2KB immutable date time library alternative to Moment.js with the same modern API "
+    },
+    {
+      "name": "react",
+      "version": "18.3.1",
+      "estimatedSizeKB": "307.47",
+      "description": "React is a JavaScript library for building user interfaces."
+    },
+    {
+      "name": "web-vitals",
+      "version": "^5.1.0",
+      "estimatedSizeKB": "287.49",
+      "description": "Easily measure performance metrics in JavaScript"
+    },
+    {
+      "name": "dompurify",
+      "version": "^3.3.0",
+      "estimatedSizeKB": "166.35",
+      "description": "DOMPurify is a DOM-only, super-fast, uber-tolerant XSS sanitizer for HTML, MathML and SVG. It's written in JavaScript and works in all modern browsers (Safari, Opera (15+), Internet Explorer (10+), Firefox and Chrome - as well as almost anything else using Blink or WebKit). DOMPurify is written by security people who have vast background in web attacks and XSS. Fear not."
+    },
+    {
+      "name": "react-window",
+      "version": "^2.2.1",
+      "estimatedSizeKB": "166.08",
+      "description": "No description"
+    },
+    {
+      "name": "zustand",
+      "version": "5.0.8",
+      "estimatedSizeKB": "35.52",
+      "description": "🐻 Bear necessities for state management in React"
+    },
+    {
+      "name": "@types/react-window",
+      "version": "^1.8.8",
+      "estimatedSizeKB": "22.34",
+      "description": "TypeScript definitions for react-window"
+    },
+    {
+      "name": "@types/dompurify",
+      "version": "^3.0.5",
+      "estimatedSizeKB": "4.96",
+      "description": "TypeScript definitions for dompurify"
+    }
+  ],
+  "codeSplittingOpportunities": [
+    {
+      "type": "large-pages",
+      "description": "大型页面组件可以进行代码分割",
+      "items": [
+        {
+          "path": "app/personnel/registration/page.tsx",
+          "sizeKB": "9.88",
+          "imports": 7
+        },
+        {
+          "path": "app/quality/qualified-supplier-directory/page.tsx",
+          "sizeKB": "8.21",
+          "imports": 7
+        },
+        {
+          "path": "app/project/subcontract-sample-list/page.tsx",
+          "sizeKB": "7.74",
+          "imports": 11
+        },
+        {
+          "path": "app/project/contract-registration/page.tsx",
+          "sizeKB": "6.51",
+          "imports": 5
+        },
+        {
+          "path": "app/equipment/calibration/page.tsx",
+          "sizeKB": "6.26",
+          "imports": 7
+        },
+        {
+          "path": "app/project/subcontract-settlement/page.tsx",
+          "sizeKB": "5.90",
+          "imports": 10
+        },
+        {
+          "path": "app/home/page.tsx",
+          "sizeKB": "5.04",
+          "imports": 6
+        },
+        {
+          "path": "app/quality/supplier-evaluation/page.tsx",
+          "sizeKB": "4.98",
+          "imports": 9
+        }
+      ]
+    },
+    {
+      "type": "large-components",
+      "description": "大型组件可以考虑懒加载",
+      "items": [
+        {
+          "path": "src/components/layouts/Sidebar/navigation/SidebarSearch.tsx",
+          "sizeKB": "8.17",
+          "exports": 1
+        },
+        {
+          "path": "src/components/common/EditableTable/EditableTable.tsx",
+          "sizeKB": "6.79",
+          "exports": 2
+        },
+        {
+          "path": "src/components/templates/__tests__/StandardFormPage.test.tsx",
+          "sizeKB": "4.68",
+          "exports": 0
+        },
+        {
+          "path": "src/components/layouts/Sidebar/navigation/SidebarMenu.tsx",
+          "sizeKB": "4.57",
+          "exports": 1
+        },
+        {
+          "path": "src/components/layouts/Sidebar/navigation/CustomSidebarMenu.tsx",
+          "sizeKB": "4.41",
+          "exports": 1
+        },
+        {
+          "path": "src/components/layouts/Header/Header.tsx",
+          "sizeKB": "4.27",
+          "exports": 2
+        },
+        {
+          "path": "src/components/ErrorBoundary.tsx",
+          "sizeKB": "4.01",
+          "exports": 3
+        },
+        {
+          "path": "src/components/layouts/Sidebar/core/Sidebar.tsx",
+          "sizeKB": "3.91",
+          "exports": 1
+        },
+        {
+          "path": "src/components/templates/__tests__/BaseFormPage.test.tsx",
+          "sizeKB": "3.81",
+          "exports": 0
+        },
+        {
+          "path": "src/components/common/FieldGroup/FieldGroup.tsx",
+          "sizeKB": "3.58",
+          "exports": 3
+        },
+        {
+          "path": "src/components/layouts/MainLayout/MainLayout.tsx",
+          "sizeKB": "3.39",
+          "exports": 2
+        }
+      ]
+    }
+  ],
+  "staticAssets": [
+    {
+      "path": "public/next.svg",
+      "sizeKB": "1.34",
+      "type": "image"
+    },
+    {
+      "path": "public/globe.svg",
+      "sizeKB": "1.01",
+      "type": "image"
+    },
+    {
+      "path": "public/file.svg",
+      "sizeKB": "0.38",
+      "type": "image"
+    },
+    {
+      "path": "public/window.svg",
+      "sizeKB": "0.38",
+      "type": "image"
+    },
+    {
+      "path": "public/vercel.svg",
+      "sizeKB": "0.13",
+      "type": "image"
+    },
+    {
+      "path": "public/.gitkeep",
+      "sizeKB": "0.00",
+      "type": "other"
+    }
+  ],
+  "nextConfig": {
+    "hasOptimization": false,
+    "hasCompression": false,
+    "hasImageOptimization": false,
+    "hasBundleAnalyzer": true
+  },
+  "suggestions": [
+    {
+      "category": "dependencies",
+      "priority": "high",
+      "title": "大型依赖优化",
+      "description": "发现 11 个大型依赖，考虑替换或按需导入",
+      "items": [
+        "next: 67828.12KB",
+        "antd: 27313.07KB",
+        "@ant-design/icons: 9509.46KB",
+        "@modelcontextprotocol/sdk: 7747.05KB",
+        "react-dom: 4404.30KB"
+      ]
+    },
+    {
+      "category": "code-splitting",
+      "priority": "medium",
+      "title": "代码分割机会",
+      "description": "发现可以进行代码分割的组件和页面",
+      "items": [
+        "large-pages: 8 个文件",
+        "large-components: 11 个文件"
+      ]
+    },
+    {
+      "category": "config",
+      "priority": "medium",
+      "title": "图片优化",
+      "description": "建议启用Next.js图片优化功能",
+      "items": [
+        "配置next.config.ts中的images选项"
+      ]
+    }
+  ]
+}

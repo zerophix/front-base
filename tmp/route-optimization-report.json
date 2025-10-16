@@ -1,0 +1,144 @@
+{
+  "timestamp": "2025-10-16T12:17:25.182Z",
+  "routeAnalysis": {
+    "totalPages": 89,
+    "totalLayouts": 1,
+    "lazyLoadedPages": 0,
+    "dynamicImports": 0,
+    "staticImports": 89,
+    "largePages": [],
+    "recommendations": []
+  },
+  "nextConfig": {
+    "configExists": false,
+    "config": {}
+  },
+  "codeSplitting": [
+    {
+      "file": "/app/api/auth-brutal-test/route.ts",
+      "size": "20.39 KB",
+      "type": "component",
+      "recommendation": "建议使用动态导入进行代码分割"
+    },
+    {
+      "file": "/app/api/security-brutal-test/route.ts",
+      "size": "17.45 KB",
+      "type": "component",
+      "recommendation": "建议使用动态导入进行代码分割"
+    },
+    {
+      "file": "/app/api/csrf-brutal-test/route.ts",
+      "size": "16.55 KB",
+      "type": "component",
+      "recommendation": "建议使用动态导入进行代码分割"
+    },
+    {
+      "file": "/app/api/file-upload-brutal-test/route.ts",
+      "size": "13.31 KB",
+      "type": "component",
+      "recommendation": "建议使用动态导入进行代码分割"
+    },
+    {
+      "file": "/app/personnel/registration/page.tsx",
+      "size": "9.88 KB",
+      "type": "page",
+      "recommendation": "建议使用动态导入进行代码分割"
+    },
+    {
+      "file": "/app/api/security-test/route.ts",
+      "size": "8.55 KB",
+      "type": "component",
+      "recommendation": "建议使用动态导入进行代码分割"
+    },
+    {
+      "file": "/app/quality/qualified-supplier-directory/page.tsx",
+      "size": "8.21 KB",
+      "type": "page",
+      "recommendation": "建议使用动态导入进行代码分割"
+    },
+    {
+      "file": "/src/components/layouts/Sidebar/navigation/SidebarSearch.tsx",
+      "size": "8.17 KB",
+      "type": "component",
+      "recommendation": "建议使用动态导入进行代码分割"
+    },
+    {
+      "file": "/app/project/subcontract-sample-list/page.tsx",
+      "size": "7.74 KB",
+      "type": "page",
+      "recommendation": "建议使用动态导入进行代码分割"
+    },
+    {
+      "file": "/src/components/common/EditableTable/EditableTable.tsx",
+      "size": "6.79 KB",
+      "type": "component",
+      "recommendation": "建议使用动态导入进行代码分割"
+    },
+    {
+      "file": "/app/project/contract-registration/page.tsx",
+      "size": "6.51 KB",
+      "type": "page",
+      "recommendation": "建议使用动态导入进行代码分割"
+    },
+    {
+      "file": "/app/api/security-test-simple/route.ts",
+      "size": "6.28 KB",
+      "type": "component",
+      "recommendation": "建议使用动态导入进行代码分割"
+    },
+    {
+      "file": "/app/equipment/calibration/page.tsx",
+      "size": "6.26 KB",
+      "type": "page",
+      "recommendation": "建议使用动态导入进行代码分割"
+    },
+    {
+      "file": "/app/api/encryption-test/route.ts",
+      "size": "6.11 KB",
+      "type": "component",
+      "recommendation": "建议使用动态导入进行代码分割"
+    },
+    {
+      "file": "/app/project/subcontract-settlement/page.tsx",
+      "size": "5.90 KB",
+      "type": "page",
+      "recommendation": "建议使用动态导入进行代码分割"
+    },
+    {
+      "file": "/app/home/page.tsx",
+      "size": "5.04 KB",
+      "type": "page",
+      "recommendation": "建议使用动态导入进行代码分割"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "route-lazy-loading",
+      "priority": "high",
+      "title": "启用路由懒加载",
+      "description": "发现 89 个静态导入的页面，建议使用动态导入",
+      "action": "使用 Next.js dynamic() 或 React.lazy() 进行懒加载"
+    },
+    {
+      "type": "next-config",
+      "priority": "medium",
+      "title": "创建Next.js配置文件",
+      "description": "未找到next.config.js，建议创建以优化构建",
+      "action": "创建next.config.js并启用相关优化选项"
+    },
+    {
+      "type": "code-splitting",
+      "priority": "high",
+      "title": "实施代码分割",
+      "description": "发现 16 个可以进行代码分割的文件",
+      "action": "对大型组件使用动态导入"
+    }
+  ],
+  "scores": {
+    "lazyLoading": 0,
+    "config": 40,
+    "codeSplitting": 0,
+    "overall": 13,
+    "grade": "F"
+  }
+}

@@ -1,0 +1,22 @@
+/* 轻量工具类：仅用于通用微样式，避免侵入组件结构 */
+
+.u-text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.u-min-width-0 { min-width: 0; }
+
+.u-mx-auto { margin-left: auto; margin-right: auto; }
+
+.u-container {
+  max-width: 1200px;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.u-p-sm { padding: var(--spacing-sm); }
+.u-p-md { padding: var(--spacing-md); }
+.u-p-lg { padding: var(--spacing-lg); }

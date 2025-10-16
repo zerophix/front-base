@@ -1,0 +1,96 @@
+{
+  "timestamp": "2025-10-16T12:20:03.946Z",
+  "project": {
+    "name": "front-base",
+    "version": "0.1.0",
+    "dependencies": 14,
+    "devDependencies": 17,
+    "scripts": [
+      "dev",
+      "build",
+      "start",
+      "lint",
+      "stylelint",
+      "stylelint:fix",
+      "test",
+      "test:watch",
+      "test:coverage",
+      "prepare",
+      "check:bundle",
+      "analyze"
+    ],
+    "engines": {}
+  },
+  "summary": {
+    "overallScore": 74,
+    "grade": "C",
+    "description": "一般"
+  },
+  "metrics": {
+    "react": {
+      "totalFiles": 97,
+      "optimizedFiles": 88,
+      "issuesFound": 45,
+      "averageScore": 94.0721649484536
+    },
+    "route": {
+      "lazyLoading": 0,
+      "config": 40,
+      "codeSplitting": 0,
+      "overall": 13,
+      "grade": "F"
+    },
+    "memory": {
+      "totalFiles": 210,
+      "problemFiles": 13,
+      "cleanFiles": 197,
+      "totalIssues": 20,
+      "cleanPercentage": 94,
+      "grade": "A"
+    },
+    "bundle": {
+      "totalDependencies": 14,
+      "largeComponents": 0
+    }
+  },
+  "trends": {
+    "codebase": {
+      "totalFiles": 0,
+      "totalSize": 0,
+      "averageFileSize": 0
+    },
+    "components": {
+      "total": 97,
+      "optimized": 88,
+      "optimizationRate": 90.72164948453609
+    },
+    "dependencies": {
+      "production": 0,
+      "development": 0,
+      "total": 0
+    },
+    "issues": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "recommendations": [
+    {
+      "priority": "critical",
+      "category": "路由优化",
+      "title": "紧急：启用路由懒加载",
+      "description": "路由优化评分过低，严重影响应用性能",
+      "impact": "high",
+      "effort": "medium"
+    }
+  ],
+  "detailedReports": {
+    "performance": true,
+    "bundle": true,
+    "react": true,
+    "route": true,
+    "memory": true
+  }
+}

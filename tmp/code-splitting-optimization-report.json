@@ -1,0 +1,48 @@
+{
+  "timestamp": "2025-10-16T12:23:31.890Z",
+  "summary": {
+    "totalFiles": 5,
+    "optimizedFiles": 4,
+    "skippedFiles": 1,
+    "errors": 0,
+    "optimizations": [
+      {
+        "file": "app/api/auth-brutal-test/route.ts",
+        "type": "api-route-split",
+        "success": true,
+        "originalSize": 19384,
+        "newSize": 80,
+        "logicFile": "/Users/mingxilv/WebstormProjects/homework/front-base/app/api/auth-brutal-test/route-logic.ts"
+      },
+      {
+        "file": "app/api/security-brutal-test/route.ts",
+        "type": "api-route-split",
+        "success": true,
+        "originalSize": 16944,
+        "newSize": 80,
+        "logicFile": "/Users/mingxilv/WebstormProjects/homework/front-base/app/api/security-brutal-test/route-logic.ts"
+      },
+      {
+        "file": "app/api/csrf-brutal-test/route.ts",
+        "type": "api-route-split",
+        "success": true,
+        "originalSize": 15848,
+        "newSize": 80,
+        "logicFile": "/Users/mingxilv/WebstormProjects/homework/front-base/app/api/csrf-brutal-test/route-logic.ts"
+      },
+      {
+        "file": "app/api/file-upload-brutal-test/route.ts",
+        "type": "api-route-split",
+        "success": true,
+        "originalSize": 12604,
+        "newSize": 80,
+        "logicFile": "/Users/mingxilv/WebstormProjects/homework/front-base/app/api/file-upload-brutal-test/route-logic.ts"
+      }
+    ]
+  },
+  "recommendations": [
+    "继续监控大型文件的增长",
+    "考虑使用webpack bundle analyzer分析打包结果",
+    "定期检查是否有新的代码分割机会"
+  ]
+}

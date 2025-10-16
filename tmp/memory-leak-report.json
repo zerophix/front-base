@@ -1,0 +1,213 @@
+{
+  "timestamp": "2025-10-16T12:30:48.114Z",
+  "summary": {
+    "totalFiles": 225,
+    "optimizedFiles": 8,
+    "skippedFiles": 217,
+    "errors": 0,
+    "issues": [
+      {
+        "file": "app/api/auth-brutal-test/route-logic.ts",
+        "reason": "not-react-component",
+        "issues": [
+          {
+            "type": "setTimeout",
+            "line": 370,
+            "match": "setTimeout(",
+            "index": 13881,
+            "needsCleanup": true,
+            "cleanupMethod": "clearTimeout"
+          }
+        ]
+      }
+    ],
+    "fixes": [
+      {
+        "file": "src/components/common/EditableTable/EditableTable.tsx",
+        "fixCount": 2,
+        "appliedFixes": [
+          "添加useEffect导入",
+          "添加useEffect清理逻辑"
+        ],
+        "detectedIssues": [
+          {
+            "type": "setTimeout",
+            "line": 129,
+            "match": "setTimeout(",
+            "index": 2903,
+            "needsCleanup": true,
+            "cleanupMethod": "clearTimeout"
+          }
+        ]
+      },
+      {
+        "file": "src/components/layouts/Header/Header.tsx",
+        "fixCount": 1,
+        "appliedFixes": [
+          "添加useEffect清理逻辑"
+        ],
+        "detectedIssues": [
+          {
+            "type": "addEventListener",
+            "line": 37,
+            "match": "addEventListener(",
+            "index": 892,
+            "needsCleanup": true,
+            "cleanupMethod": "removeEventListener"
+          }
+        ]
+      },
+      {
+        "file": "src/components/layouts/MainLayout/MainLayout.tsx",
+        "fixCount": 1,
+        "appliedFixes": [
+          "添加useEffect清理逻辑"
+        ],
+        "detectedIssues": [
+          {
+            "type": "addEventListener",
+            "line": 29,
+            "match": "addEventListener(",
+            "index": 866,
+            "needsCleanup": true,
+            "cleanupMethod": "removeEventListener"
+          },
+          {
+            "type": "addEventListener",
+            "line": 78,
+            "match": "addEventListener(",
+            "index": 2120,
+            "needsCleanup": true,
+            "cleanupMethod": "removeEventListener"
+          },
+          {
+            "type": "addEventListener",
+            "line": 79,
+            "match": "addEventListener(",
+            "index": 2203,
+            "needsCleanup": true,
+            "cleanupMethod": "removeEventListener"
+          },
+          {
+            "type": "addEventListener",
+            "line": 80,
+            "match": "addEventListener(",
+            "index": 2284,
+            "needsCleanup": true,
+            "cleanupMethod": "removeEventListener"
+          }
+        ]
+      },
+      {
+        "file": "src/components/layouts/Sidebar/core/Sidebar.tsx",
+        "fixCount": 1,
+        "appliedFixes": [
+          "添加useEffect清理逻辑"
+        ],
+        "detectedIssues": [
+          {
+            "type": "setTimeout",
+            "line": 38,
+            "match": "setTimeout(",
+            "index": 1300,
+            "needsCleanup": true,
+            "cleanupMethod": "clearTimeout"
+          }
+        ]
+      },
+      {
+        "file": "src/components/layouts/Sidebar/navigation/CustomSidebarMenu.tsx",
+        "fixCount": 1,
+        "appliedFixes": [
+          "添加useEffect清理逻辑"
+        ],
+        "detectedIssues": [
+          {
+            "type": "addEventListener",
+            "line": 45,
+            "match": "addEventListener(",
+            "index": 964,
+            "needsCleanup": true,
+            "cleanupMethod": "removeEventListener"
+          }
+        ]
+      },
+      {
+        "file": "src/components/layouts/Sidebar/navigation/SidebarMenu.tsx",
+        "fixCount": 1,
+        "appliedFixes": [
+          "添加useEffect清理逻辑"
+        ],
+        "detectedIssues": [
+          {
+            "type": "addEventListener",
+            "line": 100,
+            "match": "addEventListener(",
+            "index": 2598,
+            "needsCleanup": true,
+            "cleanupMethod": "removeEventListener"
+          }
+        ]
+      },
+      {
+        "file": "src/components/layouts/Sidebar/navigation/SidebarSearch.tsx",
+        "fixCount": 1,
+        "appliedFixes": [
+          "添加useEffect清理逻辑"
+        ],
+        "detectedIssues": [
+          {
+            "type": "setTimeout",
+            "line": 64,
+            "match": "setTimeout(",
+            "index": 1813,
+            "needsCleanup": true,
+            "cleanupMethod": "clearTimeout"
+          },
+          {
+            "type": "addEventListener",
+            "line": 57,
+            "match": "addEventListener(",
+            "index": 1541,
+            "needsCleanup": true,
+            "cleanupMethod": "removeEventListener"
+          }
+        ]
+      },
+      {
+        "file": "app/project/contract-registration/ProjectContractRegistrationPageComponent.tsx",
+        "fixCount": 2,
+        "appliedFixes": [
+          "添加useEffect导入",
+          "添加useEffect清理逻辑"
+        ],
+        "detectedIssues": [
+          {
+            "type": "setTimeout",
+            "line": 214,
+            "match": "setTimeout(",
+            "index": 4799,
+            "needsCleanup": true,
+            "cleanupMethod": "clearTimeout"
+          },
+          {
+            "type": "setTimeout",
+            "line": 232,
+            "match": "setTimeout(",
+            "index": 5232,
+            "needsCleanup": true,
+            "cleanupMethod": "clearTimeout"
+          }
+        ]
+      }
+    ]
+  },
+  "totalFixes": 10,
+  "recommendations": [
+    "检查添加的useEffect清理逻辑是否正确",
+    "确保定时器ID保存到ref或state中",
+    "验证事件监听器的清理逻辑",
+    "考虑使用自定义hooks封装清理逻辑",
+    "定期进行内存泄漏测试"
+  ]
+}

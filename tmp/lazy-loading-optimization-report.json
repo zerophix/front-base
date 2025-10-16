@@ -1,0 +1,539 @@
+{
+  "timestamp": "2025-10-16T12:22:28.922Z",
+  "summary": {
+    "totalFiles": 89,
+    "optimized": 82,
+    "skipped": 7,
+    "errors": 0,
+    "optimizationRate": 92
+  },
+  "results": [
+    {
+      "file": "app/data/detection-objects/page.tsx",
+      "status": "optimized",
+      "componentName": "DetectionObjectsPage",
+      "type": "client"
+    },
+    {
+      "file": "app/data/detection-params/page.tsx",
+      "status": "optimized",
+      "componentName": "DetectionParamsPage",
+      "type": "client"
+    },
+    {
+      "file": "app/data/page.tsx",
+      "status": "skipped",
+      "reason": "too-simple"
+    },
+    {
+      "file": "app/data/parameter-code/page.tsx",
+      "status": "optimized",
+      "componentName": "ParameterCodePage",
+      "type": "client"
+    },
+    {
+      "file": "app/data/statistics-analysis/page.tsx",
+      "status": "optimized",
+      "componentName": "DataStatisticsAnalysisPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/acceptance/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentAcceptancePage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/borrow/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentBorrowPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/calibration/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentCalibrationPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/calibration-record/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentCalibrationRecordPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/device/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentDevicePage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/drift-plan/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentDriftPlanPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/function-plan/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentFunctionPlanPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/function-record/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentFunctionRecordPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/maintenance-plan/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentMaintenancePlanPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/maintenance-record/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentMaintenanceRecordPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/new/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentNewPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/page.tsx",
+      "status": "skipped",
+      "reason": "too-simple"
+    },
+    {
+      "file": "app/equipment/periodic-implement/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentPeriodicImplementPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/periodic-plan/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentPeriodicPlanPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/periodic-record/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentPeriodicRecordPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/purchase-apply/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentPurchaseApplyPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/return/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentReturnPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/scrap-apply/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentScrapApplyPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/use-apply/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentUseApplyPage",
+      "type": "client"
+    },
+    {
+      "file": "app/equipment/use-record/page.tsx",
+      "status": "optimized",
+      "componentName": "EquipmentUseRecordPage",
+      "type": "client"
+    },
+    {
+      "file": "app/home/page.tsx",
+      "status": "optimized",
+      "componentName": "HomePage",
+      "type": "client"
+    },
+    {
+      "file": "app/page.tsx",
+      "status": "skipped",
+      "reason": "too-simple"
+    },
+    {
+      "file": "app/personnel/change/page.tsx",
+      "status": "optimized",
+      "componentName": "PersonnelChangePage",
+      "type": "client"
+    },
+    {
+      "file": "app/personnel/list/page.tsx",
+      "status": "optimized",
+      "componentName": "PersonnelListPage",
+      "type": "client"
+    },
+    {
+      "file": "app/personnel/page.tsx",
+      "status": "skipped",
+      "reason": "too-simple"
+    },
+    {
+      "file": "app/personnel/qualification/page.tsx",
+      "status": "optimized",
+      "componentName": "PersonnelQualificationPage",
+      "type": "client"
+    },
+    {
+      "file": "app/personnel/registration/page.tsx",
+      "status": "optimized",
+      "componentName": "PersonnelRegistrationPage",
+      "type": "client"
+    },
+    {
+      "file": "app/personnel/training/page.tsx",
+      "status": "optimized",
+      "componentName": "TrainingRecordPage",
+      "type": "client"
+    },
+    {
+      "file": "app/personnel/training-plan/page.tsx",
+      "status": "optimized",
+      "componentName": "TrainingPlanPage",
+      "type": "client"
+    },
+    {
+      "file": "app/personnel/training-record/page.tsx",
+      "status": "optimized",
+      "componentName": "PersonnelTrainingRecordPage",
+      "type": "client"
+    },
+    {
+      "file": "app/project/contract-registration/page.tsx",
+      "status": "optimized",
+      "componentName": "ProjectContractRegistrationPage",
+      "type": "client"
+    },
+    {
+      "file": "app/project/management-overview/page.tsx",
+      "status": "optimized",
+      "componentName": "ManagementOverviewPage",
+      "type": "client"
+    },
+    {
+      "file": "app/project/new/page.tsx",
+      "status": "optimized",
+      "componentName": "ProjectNewPage",
+      "type": "client"
+    },
+    {
+      "file": "app/project/page.tsx",
+      "status": "skipped",
+      "reason": "too-simple"
+    },
+    {
+      "file": "app/project/station/page.tsx",
+      "status": "optimized",
+      "componentName": "ProjectStationPage",
+      "type": "client"
+    },
+    {
+      "file": "app/project/subcontract-application/page.tsx",
+      "status": "optimized",
+      "componentName": "SubcontractApplicationPage",
+      "type": "client"
+    },
+    {
+      "file": "app/project/subcontract-sample-list/page.tsx",
+      "status": "optimized",
+      "componentName": "SubcontractSampleListPage",
+      "type": "client"
+    },
+    {
+      "file": "app/project/subcontract-settlement/page.tsx",
+      "status": "optimized",
+      "componentName": "SubcontractSettlementPage",
+      "type": "client"
+    },
+    {
+      "file": "app/project/subcontract-technical-requirements/page.tsx",
+      "status": "optimized",
+      "componentName": "SubcontractTechnicalRequirementsPage",
+      "type": "client"
+    },
+    {
+      "file": "app/project/task/page.tsx",
+      "status": "optimized",
+      "componentName": "ProjectTaskPage",
+      "type": "client"
+    },
+    {
+      "file": "app/project/task-management/page.tsx",
+      "status": "optimized",
+      "componentName": "ProjectTaskManagementPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/cert-validity-confirm/page.tsx",
+      "status": "optimized",
+      "componentName": "CertValidityConfirmPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/confidentiality/page.tsx",
+      "status": "optimized",
+      "componentName": "ConfidentialityPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/contract-change-application/page.tsx",
+      "status": "optimized",
+      "componentName": "ContractChangeApplicationPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/contract-review/page.tsx",
+      "status": "optimized",
+      "componentName": "ContractReviewPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/correction-value-stat/page.tsx",
+      "status": "optimized",
+      "componentName": "CorrectionValueStatPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/data-correction-apply/page.tsx",
+      "status": "optimized",
+      "componentName": "DataCorrectionApplyPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/disciplinary/page.tsx",
+      "status": "optimized",
+      "componentName": "DisciplinaryPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/doc-borrow-register/page.tsx",
+      "status": "optimized",
+      "componentName": "DocBorrowRegisterPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/doc-compose-apply/page.tsx",
+      "status": "optimized",
+      "componentName": "DocComposeApplyPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/doc-controlled-list/page.tsx",
+      "status": "optimized",
+      "componentName": "DocControlledListPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/doc-effectiveness-check/page.tsx",
+      "status": "optimized",
+      "componentName": "DocEffectivenessCheckPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/doc-issue-approval/page.tsx",
+      "status": "optimized",
+      "componentName": "DocIssueApprovalPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/doc-issue-approve/page.tsx",
+      "status": "optimized",
+      "componentName": "DocIssueApprovePage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/doc-issue-register/page.tsx",
+      "status": "optimized",
+      "componentName": "DocIssueRegisterPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/doc-modification-approval/page.tsx",
+      "status": "optimized",
+      "componentName": "DocModificationApprovalPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/doc-retention-record/page.tsx",
+      "status": "optimized",
+      "componentName": "DocRetentionRecordPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/environment/page.tsx",
+      "status": "optimized",
+      "componentName": "EnvironmentRecordPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/nonconformity/page.tsx",
+      "status": "optimized",
+      "componentName": "NonconformityPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/page.tsx",
+      "status": "skipped",
+      "reason": "too-simple"
+    },
+    {
+      "file": "app/quality/qualified-supplier-directory/page.tsx",
+      "status": "optimized",
+      "componentName": "QualifiedSupplierDirectoryPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/report-issue-register/page.tsx",
+      "status": "optimized",
+      "componentName": "ReportIssueRegisterPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/sample-verification/page.tsx",
+      "status": "optimized",
+      "componentName": "SampleVerificationPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/standard-substance-apply/page.tsx",
+      "status": "optimized",
+      "componentName": "StandardSubstanceApplyPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/std-dilution-record/page.tsx",
+      "status": "optimized",
+      "componentName": "StdDilutionRecordPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/std-periodic-plan/page.tsx",
+      "status": "optimized",
+      "componentName": "StdPeriodicPlanPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/std-periodic-record/page.tsx",
+      "status": "optimized",
+      "componentName": "StdPeriodicRecordPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/std-receive/page.tsx",
+      "status": "optimized",
+      "componentName": "StdReceivePage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/std-register/page.tsx",
+      "status": "optimized",
+      "componentName": "StdRegisterPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/std-usage-record/page.tsx",
+      "status": "optimized",
+      "componentName": "StdUsageRecordPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/supervision-business/page.tsx",
+      "status": "optimized",
+      "componentName": "SupervisionBusinessPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/supervision-notice/page.tsx",
+      "status": "optimized",
+      "componentName": "SupervisionNoticePage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/supervision-plan/page.tsx",
+      "status": "optimized",
+      "componentName": "SupervisionPlanPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/supervision-record/page.tsx",
+      "status": "optimized",
+      "componentName": "SupervisionRecordPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/supervision-register/page.tsx",
+      "status": "optimized",
+      "componentName": "SupervisionRegisterPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/supplier-evaluation/page.tsx",
+      "status": "optimized",
+      "componentName": "SupplierEvaluationPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/technical-standard-validity-report/page.tsx",
+      "status": "optimized",
+      "componentName": "TechnicalStandardValidityReportPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/testing-commission-contract/page.tsx",
+      "status": "optimized",
+      "componentName": "TestingCommissionContractPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/visitor-register/page.tsx",
+      "status": "optimized",
+      "componentName": "VisitorRegisterPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/waste/page.tsx",
+      "status": "optimized",
+      "componentName": "WasteRecordPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/waste-ledger/page.tsx",
+      "status": "optimized",
+      "componentName": "WasteLedgerPage",
+      "type": "client"
+    },
+    {
+      "file": "app/quality/waste-media-sterilization/page.tsx",
+      "status": "optimized",
+      "componentName": "WasteMediaSterilizationPage",
+      "type": "client"
+    },
+    {
+      "file": "app/records/page.tsx",
+      "status": "skipped",
+      "reason": "too-simple"
+    },
+    {
+      "file": "app/records/risk-control-form/page.tsx",
+      "status": "optimized",
+      "componentName": "RiskControlFormPage",
+      "type": "client"
+    }
+  ]
+}
