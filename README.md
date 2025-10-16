@@ -208,9 +208,14 @@ const table = useTableData({ createDefaultRow: ... });
 />
 ```
 
+## 🌐 在线演示
+
+- **生产环境**: [https://front-base.vercel.app](https://front-base.vercel.app) （部署后更新）
+- **开发预览**: 每个 PR 会自动生成预览链接
+
 ## 🚀 快速开始
 
-### 📋 环境要求
+### 环境要求
 
 - **Node.js** >= 18.17.0
 - **npm** >= 9.0.0 或 **yarn** >= 1.22.0
@@ -583,8 +588,36 @@ server {
 - 添加必要的文档
 - 保持向后兼容性
 
+## 🚀 部署
+
+### 一键部署到 Vercel（推荐）
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/front-base)
+
+### 手动部署步骤
+
+1. **Fork 本仓库**
+2. **连接到 Vercel**
+   - 访问 [vercel.com](https://vercel.com)
+   - 使用 GitHub 登录
+   - 导入你的仓库
+3. **自动部署**
+   - 推送到 `main` 分支自动触发生产部署
+   - 创建 PR 自动生成预览链接
+
+### 其他部署方式
+
+- **GitHub Pages**: 支持静态导出部署
+- **Docker**: 提供 Dockerfile 配置
+- **自定义服务器**: 支持 PM2 等部署方式
+
+详细部署指南请参考：[部署文档](./docs/DEPLOYMENT.md)
+
 ## 📚 相关文档
 
+- [部署指南](./docs/DEPLOYMENT.md) - 详细的部署配置和故障排除
+- [表单开发指南](./docs/FORM_GUIDELINES.md) - 详细的表单组件使用说明
+- [Git自动化提交](./docs/GIT_AUTOMATION.md) - 自动化提交工具使用指南
 - [📖 架构决策记录 (ADR)](./docs/architecture/)
 - [📝 表单开发指南](./docs/FORM_GUIDELINES.md)
 - [🔒 安全指南](./SECURITY_GUIDE.md)

@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "name": "front-base",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
+  "functions": {
+    "app/**/*.{js,ts}": {
+      "maxDuration": 30
+    }
+  },
+  "regions": ["hkg1", "sin1"],
+  "github": {
+    "autoAlias": false
+  }
+}

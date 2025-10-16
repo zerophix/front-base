@@ -166,7 +166,7 @@ export const httpsConfig = {
  */
 export const corsConfig = {
   origin: process.env.NODE_ENV === 'production' 
-    ? [SecureEnvLoader.get('PRODUCTION_DOMAIN')]
+    ? [SecureEnvLoader.get('PRODUCTION_DOMAIN', 'https://front-base.vercel.app')]
     : ['http://localhost:3000', 'http://127.0.0.1:3000'],
   credentials: true,
   optionsSuccessStatus: 200,
