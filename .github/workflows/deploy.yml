@@ -75,33 +75,59 @@ jobs:
           echo "🌐 访问链接：${{ steps.deploy.outputs.deployment_url }}"
 
       - name: Send DingTalk notification on success
-        if: success()
+        if: always()
         uses: actions/github-script@v7
         with:
           script: |
+            console.log('开始发送钉钉通知...');
+            console.log('当前步骤状态:', '${{ job.status }}');
+            console.log('GitHub ref:', '${{ github.ref }}');
+            
             const webhook = process.env.DINGTALK_WEBHOOK;
+            console.log('Webhook配置状态:', webhook ? '已配置' : '未配置');
+            
             if (!webhook) {
-              console.log('钉钉webhook未配置，跳过通知');
+              console.log('❌ 钉钉webhook未配置，请在GitHub Secrets中添加DINGTALK_WEBHOOK');
               return;
             }
             
-            const deploymentUrl = '${{ steps.deploy.outputs.deployment_url }}';
+            const deploymentUrl = '${{ steps.deploy.outputs.deployment_url }}' || '部署链接获取失败';
             const isProduction = '${{ github.ref }}' === 'refs/heads/main';
             const environment = isProduction ? '生产环境' : '预览环境';
+            const jobStatus = '${{ job.status }}';
+            
+            console.log('部署URL:', deploymentUrl);
+            console.log('环境:', environment);
+            console.log('任务状态:', jobStatus);
+            
+            // 根据任务状态决定消息内容
+            let title, emoji;
+            if (jobStatus === 'success') {
+              title = `🚀 ${environment}部署成功`;
+              emoji = '✅';
+            } else if (jobStatus === 'failure') {
+              title = `❌ ${environment}部署失败`;
+              emoji = '❌';
+            } else {
+              title = `⚠️ ${environment}部署状态: ${jobStatus}`;
+              emoji = '⚠️';
+            }
             
             const message = {
-              msgtype: "markdown",
-              markdown: {
-                title: `🚀 ${environment}部署成功`,
-                text: `### 🚀 ${environment}部署成功\n\n` +
-                      `**项目**: ${context.repo.repo}\n` +
-                      `**分支**: ${context.ref.replace('refs/heads/', '')}\n` +
-                      `**提交**: [${context.sha.substring(0, 7)}](${context.payload.head_commit?.url || ''})\n` +
-                      `**提交信息**: ${context.payload.head_commit?.message || ''}\n` +
-                      `**部署链接**: [点击访问](${deploymentUrl})\n` +
-                      `**部署时间**: ${new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'})}`
+              msgtype: "text",
+              text: {
+                content: `${emoji} ${title}\n\n` +
+                        `项目: ${context.repo.repo}\n` +
+                        `分支: ${context.ref.replace('refs/heads/', '')}\n` +
+                        `提交: ${context.sha.substring(0, 7)}\n` +
+                        `状态: ${jobStatus}\n` +
+                        `时间: ${new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'})}\n` +
+                        (deploymentUrl !== '部署链接获取失败' ? `链接: ${deploymentUrl}\n` : '') +
+                        `详情: https://github.com/${context.repo.owner}/${context.repo.repo}/actions`
               }
             };
+            
+            console.log('发送消息内容:', JSON.stringify(message, null, 2));
             
             try {
               const response = await fetch(webhook, {
@@ -112,58 +138,18 @@ jobs:
                 body: JSON.stringify(message)
               });
               
-              if (response.ok) {
-                console.log('钉钉通知发送成功');
-              } else {
-                console.log('钉钉通知发送失败:', response.status);
-              }
-            } catch (error) {
-              console.log('钉钉通知发送错误:', error.message);
-            }
-        env:
-          DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
-
-      - name: Send DingTalk notification on failure
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const webhook = process.env.DINGTALK_WEBHOOK;
-            if (!webhook) {
-              console.log('钉钉webhook未配置，跳过通知');
-              return;
-            }
-            
-            const message = {
-              msgtype: "markdown",
-              markdown: {
-                title: "❌ 部署失败",
-                text: `### ❌ 部署失败\n\n` +
-                      `**项目**: ${context.repo.repo}\n` +
-                      `**分支**: ${context.ref.replace('refs/heads/', '')}\n` +
-                      `**提交**: [${context.sha.substring(0, 7)}](${context.payload.head_commit?.url || ''})\n` +
-                      `**提交信息**: ${context.payload.head_commit?.message || ''}\n` +
-                      `**失败时间**: ${new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'})}\n` +
-                      `**查看详情**: [GitHub Actions](${context.payload.repository?.html_url}/actions)`
-              }
-            };
-            
-            try {
-              const response = await fetch(webhook, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(message)
-              });
+              console.log('HTTP响应状态:', response.status);
+              const responseText = await response.text();
+              console.log('响应内容:', responseText);
               
               if (response.ok) {
-                console.log('钉钉失败通知发送成功');
+                console.log('✅ 钉钉通知发送成功');
               } else {
-                console.log('钉钉失败通知发送失败:', response.status);
+                console.log('❌ 钉钉通知发送失败:', response.status, responseText);
               }
             } catch (error) {
-              console.log('钉钉失败通知发送错误:', error.message);
+              console.log('❌ 钉钉通知发送错误:', error.message);
+              console.log('错误详情:', error);
             }
         env:
           DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
