@@ -177,7 +177,7 @@
 }
 
 /* 弹出菜单样式 */
-:global(.custom-submenu-popup) {
+.menuWrapper :global(.custom-submenu-popup) {
   /* 基础样式 */
   background: var(--color-bg-container);
   border: 1px solid var(--color-border);
@@ -206,7 +206,7 @@
 }
 
 /* 弹出菜单内部菜单容器 */
-:global(.custom-submenu-popup .ant-menu) {
+.menuWrapper :global(.custom-submenu-popup .ant-menu) {
   border: none;
   background: transparent;
   max-height: 270px;
@@ -228,7 +228,7 @@
 }
 
 /* 弹出菜单中的菜单项 */
-:global(.custom-submenu-popup .ant-menu-item) {
+.menuWrapper :global(.custom-submenu-popup .ant-menu-item) {
   margin: 3px 0;
   padding: 8px 12px;
   border-radius: 8px;
@@ -240,67 +240,67 @@
 }
 
 /* 第一个和最后一个菜单项的特殊间距 - 确保滚动边界距离 */
-:global(.custom-submenu-popup .ant-menu-item:first-child) {
+.menuWrapper :global(.custom-submenu-popup .ant-menu-item:first-child) {
   margin-top: 2px;
 }
 
-:global(.custom-submenu-popup .ant-menu-item:last-child) {
+.menuWrapper :global(.custom-submenu-popup .ant-menu-item:last-child) {
   margin-bottom: 6px;
 }
 
 /* 为滚动边界添加伪元素，确保滚动时保持距离 */
-:global(.custom-submenu-popup .ant-menu)::before {
+.menuWrapper :global(.custom-submenu-popup .ant-menu)::before {
   content: '';
   display: block;
   height: 3px;
   flex-shrink: 0;
 }
 
-:global(.custom-submenu-popup .ant-menu)::after {
+.menuWrapper :global(.custom-submenu-popup .ant-menu)::after {
   content: '';
   display: block;
   height: 3px;
   flex-shrink: 0;
 }
 
-:global(.custom-submenu-popup .ant-menu-item:hover) {
+.menuWrapper :global(.custom-submenu-popup .ant-menu-item:hover) {
   background-color: var(--color-primary-bg-hover);
   transform: translateX(2px);
 }
 
-:global(.custom-submenu-popup .ant-menu-item-selected) {
+.menuWrapper :global(.custom-submenu-popup .ant-menu-item-selected) {
   background-color: var(--color-primary-bg);
   color: var(--color-primary);
   font-weight: 500;
 }
 
 /* 弹出菜单滚动条样式 */
-:global(.custom-submenu-popup .ant-menu::-webkit-scrollbar) {
+.menuWrapper :global(.custom-submenu-popup .ant-menu::-webkit-scrollbar) {
   width: 4px;
 }
 
-:global(.custom-submenu-popup .ant-menu::-webkit-scrollbar-track) {
+.menuWrapper :global(.custom-submenu-popup .ant-menu::-webkit-scrollbar-track) {
   background: transparent;
   border-radius: 2px;
 }
 
-:global(.custom-submenu-popup .ant-menu::-webkit-scrollbar-thumb) {
+.menuWrapper :global(.custom-submenu-popup .ant-menu::-webkit-scrollbar-thumb) {
   background-color: rgba(0, 0, 0, 0.15);
   border-radius: 2px;
   transition: background-color 0.2s ease;
 }
 
-:global(.custom-submenu-popup .ant-menu::-webkit-scrollbar-thumb:hover) {
+.menuWrapper :global(.custom-submenu-popup .ant-menu::-webkit-scrollbar-thumb:hover) {
   background-color: rgba(0, 0, 0, 0.25);
 }
 
 /* 滚动条角落 */
-:global(.custom-submenu-popup .ant-menu::-webkit-scrollbar-corner) {
+.menuWrapper :global(.custom-submenu-popup .ant-menu::-webkit-scrollbar-corner) {
   background: transparent;
 }
 
 /* 确保弹出框滚动隔离的额外样式 */
-:global(.custom-submenu-popup) {
+.menuWrapper :global(.custom-submenu-popup) {
   /* 防止触摸滚动传播到父元素 */
   touch-action: pan-y;
   /* 确保弹出框是独立的滚动上下文 */
@@ -308,7 +308,7 @@
 }
 
 /* 防止弹出框内容影响页面布局 */
-:global(.custom-submenu-popup *) {
+.menuWrapper :global(.custom-submenu-popup *) {
   /* 防止子元素的滚动影响父级 */
   overscroll-behavior: contain;
 }
@@ -350,7 +350,7 @@
 }
 
 /* 弹出菜单动画效果 */
-:global(.custom-submenu-popup) {
+.menuWrapper :global(.custom-submenu-popup) {
   animation: submenuFadeIn 0.2s ease-out;
   transform-origin: top left;
 }
@@ -368,58 +368,58 @@
 
 /* 弹出菜单响应式样式 */
 @media (width <= 768px) {
-  :global(.custom-submenu-popup) {
+  .menuWrapper :global(.custom-submenu-popup) {
     min-width: 200px;
     max-width: 240px;
     max-height: 280px;
     padding: 3px 0;
   }
   
-  :global(.custom-submenu-popup .ant-menu) {
+  .menuWrapper :global(.custom-submenu-popup .ant-menu) {
     max-height: 240px;
     padding: 3px 4px 5px;
     scroll-padding-top: 2px;
     scroll-padding-bottom: 4px;
   }
   
-  :global(.custom-submenu-popup .ant-menu)::before {
+  .menuWrapper :global(.custom-submenu-popup .ant-menu)::before {
     height: 2px;
   }
   
-  :global(.custom-submenu-popup .ant-menu)::after {
+  .menuWrapper :global(.custom-submenu-popup .ant-menu)::after {
     height: 2px;
   }
   
-  :global(.custom-submenu-popup .ant-menu-item) {
+  .menuWrapper :global(.custom-submenu-popup .ant-menu-item) {
     padding: 6px 10px;
     min-height: 32px;
   }
 }
 
 @media (width <= 480px) {
-  :global(.custom-submenu-popup) {
+  .menuWrapper :global(.custom-submenu-popup) {
     min-width: 180px;
     max-width: 220px;
     max-height: 240px;
     padding: 2px 0;
   }
   
-  :global(.custom-submenu-popup .ant-menu) {
+  .menuWrapper :global(.custom-submenu-popup .ant-menu) {
     max-height: 200px;
     padding: 2px 3px 4px;
     scroll-padding-top: 1px;
     scroll-padding-bottom: 2px;
   }
   
-  :global(.custom-submenu-popup .ant-menu)::before {
+  .menuWrapper :global(.custom-submenu-popup .ant-menu)::before {
     height: 1px;
   }
   
-  :global(.custom-submenu-popup .ant-menu)::after {
+  .menuWrapper :global(.custom-submenu-popup .ant-menu)::after {
     height: 1px;
   }
   
-  :global(.custom-submenu-popup .ant-menu-item) {
+  .menuWrapper :global(.custom-submenu-popup .ant-menu-item) {
     padding: 4px 8px;
     min-height: 28px;
     font-size: 13px;

@@ -74,23 +74,23 @@
 }
 
 /* 子表单（表格等）字体统一：不加粗，字号与全局一致 */
-:global(.ant-form .ant-table) {
+.formWrapper :global(.ant-form .ant-table) {
 }
 
-:global(.ant-form .ant-table-thead > tr > th) {
+.formWrapper :global(.ant-form .ant-table-thead > tr > th) {
   font-weight: 400; /* 不加粗 */
   font-size: var(--font-size-sm); /* 与 token.fontSize 对齐 */
   background-color: var(--table-header-bg);
   border-bottom: 1px solid var(--table-border-color);
 }
 
-:global(.ant-form .ant-table-tbody > tr > td) {
+.formWrapper :global(.ant-form .ant-table-tbody > tr > td) {
   font-size: var(--font-size-sm);
   padding: var(--spacing-sm) var(--spacing-md);
 }
 
 /* 子表单头部圆角与内边距 */
-:global(.ant-form .ant-table) {
+.formWrapper :global(.ant-form .ant-table) {
   border-radius: var(--radius-sm);
 }
 
