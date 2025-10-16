@@ -19,8 +19,10 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
       "test-*.js",
+      "debug-*.js",
       "*.sh",
       "scripts/**",
+      "tmp/**",
     ],
   },
   {
