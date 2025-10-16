@@ -134,14 +134,14 @@ export const qualityRoutes: RouteConfig[] = [
 // src/components/templates/BaseFormPage.tsx (简化示例)
 
 import { useRouteMeta } from '@/hooks';
-import { PageHeader } from '@/components/common';
+import { Breadcrumb } from '@/components/common';
 
 export function BaseFormPage({ children }) {
   const { title, breadcrumbs } = useRouteMeta();
 
   return (
     <div>
-      <PageHeader title={title} breadcrumbs={breadcrumbs} />
+      <Breadcrumb items={breadcrumbs} />
       <main>{children}</main>
     </div>
   );

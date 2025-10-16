@@ -15,9 +15,6 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   
-  // 输出配置 - 确保正确的静态导出
-  output: 'standalone',
-  
   // 性能优化
   experimental: {
     // 启用实验性功能
@@ -187,17 +184,13 @@ const nextConfig: NextConfig = {
     },
   }),
 
-  // 生产环境优化
+  // 生产环境特定配置
   ...(process.env.NODE_ENV === 'production' && {
     // 启用严格模式
     reactStrictMode: true,
-    // 启用 SWC 压缩
-    swcMinify: true,
-    // 优化字体
-    optimizeFonts: true,
-    // 启用静态优化
+    // 禁用尾随斜杠
     trailingSlash: false,
-    // 禁用 x-powered-by 头部
+    // 移除 X-Powered-By 头
     poweredByHeader: false,
   }),
 };
