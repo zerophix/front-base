@@ -179,8 +179,7 @@ const nextConfig: NextConfig = {
   // 开发服务器配置
   ...(process.env.NODE_ENV === 'development' && {
     devIndicators: {
-      buildActivity: true,
-      buildActivityPosition: 'bottom-right',
+      position: 'bottom-right',
     },
   }),
 
