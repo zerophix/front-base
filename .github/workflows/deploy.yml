@@ -1,18 +1,12 @@
-name: Deploy to Vercel
+name: Deployment Notification
 
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 jobs:
-  deploy:
-    name: Deploy
+  notify:
+    name: Deployment Notification
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,9 +17,6 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
 
       - name: Install dependencies
         run: npm ci
@@ -38,41 +29,14 @@ jobs:
           npm run lint
           npm run stylelint
 
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build check
+        run: npm run build
 
-      - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Deploy Project Artifacts to Vercel
-        id: deploy
+      - name: Deployment notification
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            # 生产环境部署
-            url=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
-          else
-            # 预览环境部署
-            url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
-          fi
-          echo "deployment_url=$url" >> $GITHUB_OUTPUT
-
-      - name: Comment PR with deployment URL
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `🚀 部署完成！预览链接：${{ steps.deploy.outputs.deployment_url }}`
-            })
-
-      - name: Update deployment status
-        if: github.ref == 'refs/heads/main'
-        run: |
-          echo "✅ 生产环境部署成功！"
-          echo "🌐 访问链接：${{ steps.deploy.outputs.deployment_url }}"
+          echo "✅ 代码质量检查通过！"
+          echo "🚀 Vercel将自动部署此次提交"
+          echo "📝 提交信息: ${{ github.event.head_commit.message }}"
 
       - name: Send DingTalk notification on success
         if: always()
@@ -91,39 +55,40 @@ jobs:
               return;
             }
             
-            const deploymentUrl = '${{ steps.deploy.outputs.deployment_url }}' || '部署链接获取失败';
             const isProduction = '${{ github.ref }}' === 'refs/heads/main';
             const environment = isProduction ? '生产环境' : '预览环境';
             const jobStatus = '${{ job.status }}';
+            const commitMessage = '${{ github.event.head_commit.message }}';
             
-            console.log('部署URL:', deploymentUrl);
             console.log('环境:', environment);
             console.log('任务状态:', jobStatus);
+            console.log('提交信息:', commitMessage);
             
             // 根据任务状态决定消息内容
             let title, emoji;
             if (jobStatus === 'success') {
-              title = `🚀 ${environment}部署成功`;
+              title = `🚀 代码质量检查通过，${environment}准备部署`;
               emoji = '✅';
             } else if (jobStatus === 'failure') {
-              title = `❌ ${environment}部署失败`;
+              title = `❌ 代码质量检查失败`;
               emoji = '❌';
             } else {
-              title = `⚠️ ${environment}部署状态: ${jobStatus}`;
+              title = `⚠️ 代码检查状态: ${jobStatus}`;
               emoji = '⚠️';
             }
             
             const message = {
               msgtype: "text",
               text: {
-                content: `GitHub CI 部署 监控 通知\n\n` +
+                content: `GitHub CI 监控通知\n\n` +
                         `${emoji} ${title}\n\n` +
                         `项目: ${context.repo.repo}\n` +
                         `分支: ${context.ref.replace('refs/heads/', '')}\n` +
                         `提交: ${context.sha.substring(0, 7)}\n` +
+                        `信息: ${commitMessage}\n` +
                         `状态: ${jobStatus}\n` +
                         `时间: ${new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'})}\n` +
-                        (deploymentUrl !== '部署链接获取失败' ? `链接: ${deploymentUrl}\n` : '') +
+                        (jobStatus === 'success' ? `🔄 Vercel将自动部署此次提交\n` : '') +
                         `详情: https://github.com/${context.repo.owner}/${context.repo.repo}/actions`
               }
             };
