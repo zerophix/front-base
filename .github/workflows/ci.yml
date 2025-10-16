@@ -89,3 +89,81 @@ jobs:
       - name: Run npm audit
         run: npm audit --audit-level=moderate
 
+  notify:
+    name: Notify Results
+    runs-on: ubuntu-latest
+    needs: [lint, test, build, security]
+    if: always()
+    steps:
+      - name: Send DingTalk notification
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const webhook = process.env.DINGTALK_WEBHOOK;
+            if (!webhook) {
+              console.log('钉钉webhook未配置，跳过通知');
+              return;
+            }
+            
+            const jobs = {
+              lint: '${{ needs.lint.result }}',
+              test: '${{ needs.test.result }}',
+              build: '${{ needs.build.result }}',
+              security: '${{ needs.security.result }}'
+            };
+            
+            const allSuccess = Object.values(jobs).every(result => result === 'success');
+            const hasFailure = Object.values(jobs).some(result => result === 'failure');
+            
+            let status = '✅ 成功';
+            let color = '#00C851';
+            if (hasFailure) {
+              status = '❌ 失败';
+              color = '#ff4444';
+            } else if (Object.values(jobs).some(result => result === 'cancelled')) {
+              status = '⚠️ 取消';
+              color = '#ffbb33';
+            }
+            
+            const jobResults = Object.entries(jobs)
+              .map(([job, result]) => {
+                const emoji = result === 'success' ? '✅' : result === 'failure' ? '❌' : '⚠️';
+                return `${emoji} ${job}: ${result}`;
+              })
+              .join('\n');
+            
+            const message = {
+              msgtype: "markdown",
+              markdown: {
+                title: `${status} CI检查完成`,
+                text: `### ${status} CI检查完成\n\n` +
+                      `**项目**: ${context.repo.repo}\n` +
+                      `**分支**: ${context.ref.replace('refs/heads/', '')}\n` +
+                      `**提交**: [${context.sha.substring(0, 7)}](${context.payload.head_commit?.url || ''})\n` +
+                      `**提交信息**: ${context.payload.head_commit?.message || ''}\n\n` +
+                      `**检查结果**:\n${jobResults}\n\n` +
+                      `**检查时间**: ${new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'})}\n` +
+                      `**查看详情**: [GitHub Actions](${context.payload.repository?.html_url}/actions)`
+              }
+            };
+            
+            try {
+              const response = await fetch(webhook, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(message)
+              });
+              
+              if (response.ok) {
+                console.log('钉钉CI通知发送成功');
+              } else {
+                console.log('钉钉CI通知发送失败:', response.status);
+              }
+            } catch (error) {
+              console.log('钉钉CI通知发送错误:', error.message);
+            }
+        env:
+          DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
+
