@@ -1,17 +1,6 @@
 {
-  "version": 2,
   "name": "front-base",
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  },
-  "functions": {
-    "app/api/**/*.{js,ts}": {
-      "maxDuration": 30
-    }
-  },
-  "regions": ["hkg1", "sin1"],
+
   "headers": [
     {
       "source": "/(.*)",
