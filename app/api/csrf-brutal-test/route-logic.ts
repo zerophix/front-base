@@ -95,7 +95,7 @@ export async function handlePOST(request: NextRequest) {
         testResults.token_reuse.tested++;
         
         // 检查是否为重用令牌
-        const isReusedToken = payload.body.reuse || payload.headers?.['X-CSRF-Token']?.includes('reused') || payload.headers?.['X-CSRF-Token']?.includes('cross_session');
+        const isReusedToken = (payload as any).body?.reuse || (payload.headers as any)?.['X-CSRF-Token']?.includes('reused') || (payload.headers as any)?.['X-CSRF-Token']?.includes('cross_session');
         const isBlocked = isReusedToken; // 应该阻止重用的令牌
         
         if (isBlocked) {
@@ -127,8 +127,8 @@ export async function handlePOST(request: NextRequest) {
         testResults.header_manipulation.tested++;
         
         // 检查关键安全头部
-        const hasValidReferer = !payload.removeReferer && (!payload.headers?.['Referer'] || !payload.headers['Referer'].includes('evil') && !payload.headers['Referer'].includes('malicious'));
-        const hasValidOrigin = !payload.removeOrigin && (!payload.headers?.['Origin'] || !payload.headers['Origin'].includes('malicious') && !payload.headers['Origin'].includes('evil'));
+        const hasValidReferer = !(payload as any).removeReferer && (!(payload.headers as any)?.['Referer'] || !(payload.headers as any)['Referer'].includes('evil') && !(payload.headers as any)['Referer'].includes('malicious'));
+        const hasValidOrigin = !(payload as any).removeOrigin && (!(payload.headers as any)?.['Origin'] || !(payload.headers as any)['Origin'].includes('malicious') && !(payload.headers as any)['Origin'].includes('evil'));
         const isBlocked = !hasValidReferer || !hasValidOrigin;
         
         if (isBlocked) {
@@ -160,9 +160,9 @@ export async function handlePOST(request: NextRequest) {
         testResults.method_override.tested++;
         
         // 检查是否有方法覆盖
-        const hasMethodOverride = payload.headers?.['X-HTTP-Method-Override'] || 
-                                 payload.headers?.['X-Method-Override'] || 
-                                 (payload.body && payload.body._method);
+        const hasMethodOverride = (payload.headers as any)?.['X-HTTP-Method-Override'] || 
+                                 (payload.headers as any)?.['X-Method-Override'] || 
+                                 ((payload as any).body && (payload as any).body._method);
         const isBlocked = hasMethodOverride; // 应该阻止方法覆盖攻击
         
         if (isBlocked) {
