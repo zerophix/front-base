@@ -15,9 +15,13 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   
+  // 输出配置 - 确保正确的静态导出
+  output: 'standalone',
+  
   // 性能优化
   experimental: {
     // 启用实验性功能
+    optimizeCss: true,
   },
 
   // 构建优化

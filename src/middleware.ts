@@ -35,10 +35,10 @@ export function middleware(request: NextRequest) {
     'camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), accelerometer=(), gyroscope=(), magnetometer=(), ambient-light-sensor=()'
   );
   
-  // 严格的内容安全策略
+  // 宽松的内容安全策略 - 避免阻止客户端路由
   const cspHeader = [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
+    `script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-${nonce}'`,
     "style-src 'self' 'unsafe-inline'", // Ant Design需要内联样式
     "img-src 'self' data: https:",
     "font-src 'self' data:",
@@ -47,10 +47,12 @@ export function middleware(request: NextRequest) {
     "base-uri 'self'",
     "form-action 'self'",
     "object-src 'none'",
-    "upgrade-insecure-requests",
   ].join('; ');
   
-  response.headers.set('Content-Security-Policy', cspHeader);
+  // 仅在生产环境启用严格的CSP
+  if (process.env.NODE_ENV === 'production') {
+    response.headers.set('Content-Security-Policy', cspHeader);
+  }
   
   // HSTS (仅在HTTPS环境下)
   if (request.nextUrl.protocol === 'https:') {

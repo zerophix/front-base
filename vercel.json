@@ -1,5 +1,15 @@
 {
   "name": "front-base",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  
+  "rewrites": [
+    {
+      "source": "/((?!api|_next|_static|_vercel|favicon.ico).*)",
+      "destination": "/index.html"
+    }
+  ],
 
   "headers": [
     {
@@ -16,8 +26,27 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
         }
       ]
     }
-  ]
+  ],
+
+  "functions": {
+    "app/api/**/*.ts": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }
