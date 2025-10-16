@@ -1,0 +1,28 @@
+/* 通用页面容器样式 */
+
+.container {
+  padding: 0;
+  background-color: var(--color-bg);
+  min-height: calc(100vh - var(--header-height));
+}
+
+.content {
+  /* 收紧页面内容的内边距，避免与 MainLayout.content 叠加造成视觉空隙过大 */
+  padding: var(--spacing-lg) var(--spacing-md);
+  background-color: var(--color-bg);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-xxl);
+}
+
+@media (max-width: var(--breakpoint-md)) {
+  .content {
+    /* 移动端维持紧凑内边距 */
+    padding: var(--spacing-md);
+  }
+}
+

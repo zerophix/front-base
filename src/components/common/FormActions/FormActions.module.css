@@ -1,0 +1,22 @@
+.container {
+  margin-top: var(--spacing-lg, 24px);
+  padding-top: var(--spacing-lg, 24px);
+  border-top: 1px solid var(--color-border, #f0f0f0);
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  background: var(--color-bg);
+}
+
+.left {
+  text-align: left;
+}
+
+.center {
+  text-align: center;
+}
+
+.right {
+  text-align: right;
+}
+

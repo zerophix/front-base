@@ -1,0 +1,64 @@
+/* ========================================
+   侧边栏切换按钮样式
+   ======================================== */
+
+/* 底部栏容器 - 固定在侧边栏底部 */
+.bottomBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 收缩态居中，保持与中线对齐 */
+  height: 56px;
+}
+
+/* 切换按钮 */
+.toggleBtn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #8c8c8c;
+  font-size: 18px;
+  line-height: 1;
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto; /* 明确在容器中心 */
+  transition: color 0.2s ease;
+}
+
+.toggleBtn:hover {
+  color: #1890ff;
+}
+
+.toggleBtn:focus {
+  outline: none;
+  color: #1890ff;
+}
+
+/* 折叠状态样式 */
+.bottomBarCollapsed {
+  /* 宽度由父容器控制，不需要单独设置 */
+}
+
+/* 响应式设计 */
+@media (width <= 768px) {
+  .bottomBar {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    height: 48px;
+  }
+  
+  .toggleBtn {
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+  }
+}

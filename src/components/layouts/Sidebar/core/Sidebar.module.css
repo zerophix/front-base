@@ -1,0 +1,31 @@
+/* ========================================
+   侧边栏容器样式
+   ======================================== */
+
+.sidebar {
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  /* 优化触摸性能 */
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+/* 响应式设计 */
+@media (width <= 768px) {
+  .sidebar {
+    width: var(--sidebar-width, 220px);
+    /* 移动端优化 */
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    /* 添加触摸反馈 */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+}
