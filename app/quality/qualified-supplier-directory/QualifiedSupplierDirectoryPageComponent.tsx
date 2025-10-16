@@ -2,15 +2,13 @@
  * 合格供应商和外部服务方名录页面
  */
 
-import React, { useRef } from 'react';
-import { Input, Row, Col, Form, DatePicker, message, Typography, Divider } from 'antd';
+import React from 'react';
+import { Input, Row, Col, Form, DatePicker } from 'antd';
 import { BaseFormPage } from '@/components/templates/BaseFormPage';
 import { EditableTable, FormActions } from '@/components/common';
 import { useTableData, useFormSubmit, useRouteMeta, usePageConfig } from '@/hooks';
 import type { IEditableTableConfig } from '@/types/form';
 import { FieldType } from '@/types/form';
-
-const { Title, Text } = Typography;
 
 type SupplierRow = {
   key: string;

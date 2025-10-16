@@ -6,9 +6,8 @@
 import { authManager, isAuthenticated } from './auth';
 import { initCsrfProtection, validateCsrfToken } from './security';
 import { logger, securityLogger, auditLogger, SecurityEventType } from './logger';
-import { securityMonitor, ThreatLevel } from './monitoring';
-import { envManager, validateEnvironmentSecurity } from './encryption';
-import { securityConfig } from '../config/security';
+import { securityMonitor } from './monitoring';
+import { validateEnvironmentSecurity } from './encryption';
 
 export interface SecurityManagerConfig {
   enableLogging?: boolean;

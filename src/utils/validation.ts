@@ -162,7 +162,7 @@ export const formValidationSchemas = {
     confirmPassword: {
       rules: {
         required: true,
-        custom: (value: string) => {
+        custom: (_value: string) => {
           // 这里需要在实际使用时传入原密码进行比较
           return true; // 占位符，实际实现需要访问其他字段
         },

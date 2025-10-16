@@ -90,7 +90,7 @@ const SidebarSearchComponent: React.FC<SidebarSearchProps> = ({
     }
   }, []);
 
-  const handleClear = useCallback(() => {
+  const _handleClear = useCallback(() => {
     onChange('');
     onClear?.();
   }, [onChange, onClear]);

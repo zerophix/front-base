@@ -167,7 +167,7 @@ export default function SupplierEvaluationPage() {
         return true;
       }}
     >
-      {(form) => (
+      {(_form) => (
         <>
           <Form.Item 
             label={

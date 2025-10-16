@@ -25,8 +25,7 @@ export function smartLazyLoad<T extends ComponentType<any>>(
 ) {
   const {
     isComplex = false,
-    isLowFrequency = false,
-    loadingText = '加载中...'
+    isLowFrequency = false
   } = options;
 
   // 判断是否需要懒加载

@@ -67,7 +67,7 @@ export const sanitizeHtml = async (html: string, options?: {
     }
     
     return purify.sanitize(html, config);
-  } catch (error) {
+  } catch {
     // 降级处理：移除所有HTML标签
     return html.replace(/<[^>]*>/g, '');
   }
@@ -498,21 +498,21 @@ const detectJWTManipulation = (token: string): boolean => {
           }
         }
         
-      } catch (e) {
-        // 无法解析payload，可能是恶意构造的
+      } catch {
+          // 无法解析payload，可能是恶意构造的
+          return true;
+        }
+        
+      } catch {
+        // 无法解析header，可能是恶意构造的
         return true;
       }
       
-    } catch (e) {
-      // 无法解析header，可能是恶意构造的
+      return false;
+    } catch {
+      // 解析失败，认为是恶意的
       return true;
     }
-    
-    return false;
-  } catch (e) {
-    // 解析失败，认为是恶意的
-    return true;
-  }
 };
 
 /**

@@ -19,7 +19,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     };
   }, []);
   const sidebarCollapsed = useUIStore((s) => s.sidebarCollapsed);
-  const toggleSidebar = useUIStore((s) => s.toggleSidebar);
+  const _toggleSidebar = useUIStore((s) => s.toggleSidebar);
   const sidebarWidth = sidebarCollapsed ? '64px' : '264px';
   
   // 移动端状态管理
@@ -43,12 +43,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
     let startX = 0;
     let startY = 0;
-    let isSwipeGesture = false;
+    let _isSwipeGesture = false;
 
     const handleTouchStart = (e: TouchEvent) => {
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
-      isSwipeGesture = false;
+      _isSwipeGesture = false;
     };
 
     const handleTouchMove = (e: TouchEvent) => {
@@ -61,7 +61,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
       // 检测是否为水平滑动手势
       if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
-        isSwipeGesture = true;
+        _isSwipeGesture = true;
         
         // 从左边缘向右滑动打开侧边栏
         if (startX < 50 && diffX > 100 && !mobileMenuOpen) {
@@ -79,7 +79,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const handleTouchEnd = () => {
       startX = 0;
       startY = 0;
-      isSwipeGesture = false;
+      _isSwipeGesture = false;
     };
 
     document.addEventListener('touchstart', handleTouchStart, { passive: false });

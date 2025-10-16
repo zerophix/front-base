@@ -72,7 +72,7 @@ class EnvironmentManager {
     
     try {
       this.encryptionKey = Buffer.from(keyString, 'hex');
-    } catch (error) {
+    } catch {
       throw new Error('Invalid ENCRYPTION_KEY format. Must be a valid hex string');
     }
   }
@@ -211,7 +211,7 @@ export class EncryptionUtils {
     try {
       const result: EncryptionResult = JSON.parse(encryptedValue);
       return this.decrypt(result);
-    } catch (error) {
+    } catch {
       throw new Error('Invalid encrypted environment value format');
     }
   }
@@ -279,7 +279,7 @@ export class SecureEnvLoader {
         const decrypted = EncryptionUtils.decryptEnvValue(value);
         this.cache.set(key, decrypted);
         return decrypted;
-      } catch (error) {
+      } catch {
         throw new Error(`Failed to decrypt environment variable ${key}`);
       }
     }
@@ -326,7 +326,7 @@ export class SecureEnvLoader {
     for (const varName of requiredVars) {
       try {
         this.get(varName);
-      } catch (error) {
+      } catch {
         missing.push(varName);
       }
     }

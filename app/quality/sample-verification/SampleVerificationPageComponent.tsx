@@ -102,7 +102,7 @@ export default function SampleVerificationPage() {
         return true;
       }}
     >
-      {(form) => (
+      {(_form) => (
         <>
           <Form.Item label="本次参与检定人员" name="inspectors">
             <Select mode="multiple" placeholder="请选择" options={[

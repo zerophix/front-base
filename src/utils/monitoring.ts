@@ -3,8 +3,7 @@
  * 实现实时威胁检测和异常行为分析
  */
 
-import { securityLogger, SecurityEventType } from './logger';
-import { monitoringConfig } from '../config/security';
+import { securityLogger } from './logger';
 
 /**
  * 威胁级别
@@ -183,7 +182,7 @@ export class SecurityMonitor {
     userId: string,
     endpoint: string,
     method: string,
-    ip: string
+    _ip: string
   ): AnomalyDetectionResult {
     const reasons: string[] = [];
     let riskScore = 0;
@@ -504,15 +503,9 @@ export class SecurityMonitor {
   /**
    * 检查可疑IP
    */
-  private isSuspiciousIp(ip: string): boolean {
+  private isSuspiciousIp(_ip: string): boolean {
     // 简化的可疑IP检测
     // 实际实现应该使用威胁情报数据库
-    const suspiciousRanges = [
-      '10.0.0.0/8',    // 私有网络（可能是代理）
-      '172.16.0.0/12', // 私有网络
-      '192.168.0.0/16', // 私有网络
-    ];
-    
     // TODO: 实现IP范围检查
     return false;
   }
