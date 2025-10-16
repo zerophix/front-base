@@ -99,10 +99,20 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            console.log('🔍 开始钉钉通知流程...');
+            console.log('环境变量检查:');
+            console.log('- DINGTALK_WEBHOOK:', process.env.DINGTALK_WEBHOOK ? '已配置' : '未配置');
+            
             const webhook = process.env.DINGTALK_WEBHOOK;
             if (!webhook) {
-              console.log('钉钉webhook未配置，跳过通知');
+              console.log('❌ 钉钉webhook未配置，请在GitHub Secrets中添加DINGTALK_WEBHOOK');
+              console.log('💡 配置步骤: Settings → Secrets and variables → Actions → New repository secret');
               return;
+            }
+            
+            // 验证webhook格式
+            if (!webhook.includes('oapi.dingtalk.com')) {
+              console.log('⚠️ Webhook地址格式可能不正确，请确认是钉钉机器人的webhook地址');
             }
             
             const lintResult = '${{ needs.lint.result }}';
