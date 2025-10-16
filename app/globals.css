@@ -180,7 +180,7 @@ button {
 .ant-dropdown .ant-menu {
   /* 压缩内部菜单的边距和内边距 */
   margin: 0 !important;
-  padding: 4px 4px !important;
+  padding: 4px !important;
 }
 
 /* 方案3: 使用 transform 缩放整个弹出框 */
@@ -195,7 +195,7 @@ button {
   /* 更精确的尺寸控制 */
   min-height: 70px !important;
   max-height: 310px !important;
-  padding: 4px 0 10px 0 !important;
+  padding: 4px 0 10px !important;
 }
 
 .ant-menu-submenu-popup.custom-submenu-popup .ant-menu {
@@ -208,7 +208,7 @@ button {
   .ant-menu-submenu-popup.custom-submenu-popup {
     min-height: 60px !important;
     max-height: 250px !important;
-    padding: 3px 0 7px 0 !important;
+    padding: 3px 0 7px !important;
   }
   
   .ant-menu-submenu-popup.custom-submenu-popup .ant-menu {
@@ -221,7 +221,7 @@ button {
   .ant-menu-submenu-popup.custom-submenu-popup {
     min-height: 50px !important;
     max-height: 230px !important;
-    padding: 2px 0 5px 0 !important;
+    padding: 2px 0 5px !important;
   }
   
   .ant-menu-submenu-popup.custom-submenu-popup .ant-menu {

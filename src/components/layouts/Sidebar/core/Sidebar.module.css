@@ -19,13 +19,6 @@
   .sidebar {
     width: var(--sidebar-width, 220px);
     /* 移动端优化 */
-    -webkit-tap-highlight-color: transparent;
     user-select: none;
-    /* 添加触摸反馈 */
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
   }
 }

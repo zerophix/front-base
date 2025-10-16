@@ -47,7 +47,7 @@
 }
 
 .section h4 {
-  margin: 0 0 var(--spacing-sm) 0;
+  margin: 0 0 var(--spacing-sm);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
   color: var(--color-primary);
@@ -61,7 +61,7 @@
 }
 
 .subsection h5 {
-  margin: 0 0 var(--spacing-xs) 0;
+  margin: 0 0 var(--spacing-xs);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
   color: var(--color-text);
@@ -70,14 +70,14 @@
 }
 
 .section p {
-  margin: 0 0 var(--spacing-sm) 0;
+  margin: 0 0 var(--spacing-sm);
   color: var(--color-text-secondary);
   line-height: 1.6;
   font-family: var(--font-family-serif);
 }
 
 .section ul {
-  margin: 0 0 var(--spacing-xs) 0;
+  margin: 0 0 var(--spacing-xs);
   padding-left: 20px;
 }
 
@@ -98,7 +98,6 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
   padding: var(--spacing-lg) !important;
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   max-width: min(520px, 85vw) !important;
   max-height: 450px !important;
   word-wrap: break-word !important;

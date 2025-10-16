@@ -82,7 +82,6 @@
 @media (max-width: var(--breakpoint-xs)) {
   .layout {
     /* 移动端禁用选择，提升触摸体验 */
-    -webkit-user-select: none;
     user-select: none;
     /* 禁用移动端的弹性滚动 */
     -webkit-overflow-scrolling: touch;
@@ -110,16 +109,12 @@
     border-left: none;
     /* 移动端内容区域优化 */
     touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
   }
   
   /* 移动端遮罩层 */
   .mobileOverlay {
     position: fixed;
-    top: var(--header-height);
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: var(--header-height) 0 0;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 99;
     opacity: 0;

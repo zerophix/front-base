@@ -19,11 +19,11 @@
 }
 
 .welcomeContent {
-  color: white;
+  color: #ffffff;
 }
 
 .welcomeTitle {
-  color: white !important;
+  color: #ffffff !important;
   margin-bottom: 16px;
   font-weight: 600;
 }
@@ -115,7 +115,7 @@
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .container {
     gap: 16px;
   }
@@ -149,7 +149,7 @@
   }
 }
 
-@media (max-width: 576px) {
+@media (width <= 576px) {
   .welcomeCard :global(.ant-card-body) {
     padding: 24px 16px;
   }
