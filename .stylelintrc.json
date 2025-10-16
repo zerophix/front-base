@@ -3,7 +3,7 @@
   "rules": {
     "selector-class-pattern": "^[a-z][a-zA-Z0-9-_]*$",
     "custom-property-pattern": null,
-    "declaration-no-important": true,
+    "declaration-no-important": null,
     "color-named": "never",
     "color-no-hex": null,
     "color-function-notation": null,
