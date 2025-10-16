@@ -48,7 +48,7 @@ const nextConfig: NextConfig = {
   compress: true,
 
   // 静态文件优化
-  assetPrefix: process.env.NODE_ENV === 'production' ? process.env.CDN_URL || '' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? (process.env.CDN_URL || '') : '',
 
   // 输出配置 - Vercel部署时使用默认配置
   // output: 'standalone', // 注释掉以支持Vercel部署
@@ -173,7 +173,7 @@ const nextConfig: NextConfig = {
 
   // 环境变量
   env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
+    CUSTOM_KEY: process.env.CUSTOM_KEY || '',
   },
 
   // 开发服务器配置
