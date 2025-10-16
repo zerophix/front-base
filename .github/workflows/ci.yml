@@ -138,7 +138,8 @@ jobs:
             const message = {
               msgtype: "text",
               text: {
-                content: `${emoji} CI检查完成\n\n` +
+                content: `GitHub CI 部署 监控 通知\n\n` +
+                        `${emoji} CI检查完成\n\n` +
                         `项目: ${context.repo.repo}\n` +
                         `分支: ${context.ref.replace('refs/heads/', '')}\n` +
                         `提交: ${context.sha.substring(0, 7)}\n\n` +
