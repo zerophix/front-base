@@ -620,8 +620,8 @@ server {
 - [Git自动化提交](./docs/GIT_AUTOMATION.md) - 自动化提交工具使用指南
 - [📖 架构决策记录 (ADR)](./docs/architecture/)
 - [📝 表单开发指南](./docs/FORM_GUIDELINES.md)
-- [🔒 安全指南](./SECURITY_GUIDE.md)
-- [🎨 样式指南](./STYLE_GUIDE.md)
+- [🔒 安全指南](docs/SECURITY_GUIDE.md)
+- [🎨 样式指南](docs/STYLE_GUIDE.md)
 
 ## 🐛 问题反馈
 

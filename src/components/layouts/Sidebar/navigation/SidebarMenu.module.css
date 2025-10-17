@@ -105,15 +105,6 @@
 .menuCollapsed :global(.ant-menu-item .anticon) {
   margin: 0 auto;
   display: block;
-}
-
-.menuCollapsed :global(.ant-menu-item:hover) {
-  background-color: var(--color-primary-bg-hover);
-  transform: scale(1.05);
-}
-
-.menuCollapsed :global(.ant-menu-item-selected) {
-  background-color: var(--color-primary-bg);
   color: var(--color-primary);
 }
 
@@ -142,21 +133,6 @@
 .menuCollapsed :global(.ant-menu-submenu-title:hover) {
   background-color: var(--color-primary-bg-hover);
   transform: scale(1.05);
-}
-
-.menuCollapsed :global(.ant-menu-inline) {
-  border: none !important;
-  border-right: none !important;
-}
-
-.menuCollapsed :global(.ant-menu-root) {
-  border: none !important;
-  border-right: none !important;
-}
-
-.menuCollapsed :global(.ant-menu-item) {
-  border: none !important;
-  border-right: none !important;
 }
 
 .menuCollapsed :global(.ant-menu-submenu) {
