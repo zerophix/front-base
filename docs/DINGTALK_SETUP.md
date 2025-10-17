@@ -1,161 +1,145 @@
 # 钉钉机器人通知配置指南
 
-## 📋 概述
+本项目已集成钉钉机器人通知功能，可以在CI检查和部署完成时自动发送通知到钉钉群。
 
-本项目已集成钉钉机器人通知功能，可以在以下情况自动发送通知：
-- ✅ CI检查完成（成功/失败）
-- 🚀 部署完成（成功/失败）
-- ⚠️ 构建过程中的重要状态变化
+## 功能概述
 
-## 🔧 配置步骤
+- **CI检查通知**: 代码检查、测试、构建、安全扫描完成后发送结果通知
+- **部署通知**: Vercel部署成功或失败时发送通知
+- **详细信息**: 包含项目、分支、提交信息、执行结果等详细信息
+
+## 配置步骤
 
 ### 1. 创建钉钉机器人
 
-1. **打开钉钉群聊**
-   - 进入需要接收通知的钉钉群
-   - 点击群设置 → 智能群助手 → 添加机器人
+1. 在钉钉群中，点击群设置 → 智能群助手 → 添加机器人
+2. 选择"自定义"机器人
+3. 设置机器人名称（如：GitHub通知机器人）
+4. 安全设置选择"自定义关键词"，添加关键词：`CI`、`部署`、`GitHub`
+5. 复制生成的Webhook地址
 
-2. **选择自定义机器人**
-   - 选择"自定义"机器人类型
-   - 设置机器人名称（如：GitHub部署通知）
-   - 设置机器人头像（可选）
+### 2. 在GitHub中配置Secret
 
-3. **配置安全设置**
-   - 推荐选择"加签"方式（更安全）
-   - 或者选择"自定义关键词"，添加关键词如：部署、CI、GitHub
-   - 复制生成的Webhook地址
-
-### 2. 在GitHub仓库中配置Secret
-
-1. **进入GitHub仓库设置**
-   ```
-   GitHub仓库 → Settings → Secrets and variables → Actions
-   ```
-
-2. **添加新的Secret**
-   - 点击"New repository secret"
-   - Name: `DINGTALK_WEBHOOK`
-   - Value: 粘贴钉钉机器人的Webhook地址
-   - 点击"Add secret"
+1. 进入GitHub仓库页面
+2. 点击 Settings → Secrets and variables → Actions
+3. 点击 "New repository secret"
+4. Name: `DINGTALK_WEBHOOK`
+5. Secret: 粘贴钉钉机器人的Webhook地址
+6. 点击 "Add secret"
 
 ### 3. 验证配置
 
-配置完成后，下次推送代码到main分支时，钉钉群会收到通知消息。
+推送代码到main分支或创建Pull Request，观察钉钉群是否收到通知。
 
-## 📱 通知消息格式
+## 通知消息格式
 
-### CI检查通知
-```markdown
-### ✅ CI检查完成
+### CI检查通知示例
+```
+✅ CI检查完成
 
-**项目**: front-base
-**分支**: main
-**提交**: a1b2c3d
-**提交信息**: feat: 添加新功能
+项目: front-base
+分支: main
+提交: a1b2c3d
 
-**检查结果**:
-✅ lint: success
-✅ test: success
-✅ build: success
-✅ security: success
+检查结果:
+- 代码检查: ✅ success
+- 单元测试: ✅ success
+- 构建测试: ✅ success
+- 安全检查: ✅ success
 
-**检查时间**: 2024-01-15 14:30:25
-**查看详情**: [GitHub Actions](链接)
+总体状态: ✅ 所有检查通过
+时间: 2024-01-15 14:30:25
+详情: https://github.com/username/front-base/actions
 ```
 
-### 部署成功通知
-```markdown
-### 🚀 生产环境部署成功
+### 部署通知示例
+```
+🚀 生产环境部署成功
 
-**项目**: front-base
-**分支**: main
-**提交**: a1b2c3d
-**提交信息**: feat: 添加新功能
-**部署链接**: [点击访问](https://your-app.vercel.app)
-**部署时间**: 2024-01-15 14:35:10
+项目: front-base
+分支: main
+提交: a1b2c3d
+状态: success
+时间: 2024-01-15 14:35:10
+链接: https://your-app.vercel.app
+详情: https://github.com/username/front-base/actions
 ```
 
-### 部署失败通知
-```markdown
-### ❌ 部署失败
+## 故障排除
 
-**项目**: front-base
-**分支**: main
-**提交**: a1b2c3d
-**提交信息**: fix: 修复bug
-**失败时间**: 2024-01-15 14:35:10
-**查看详情**: [GitHub Actions](链接)
+### 1. 通知未发送
+- 检查GitHub Secrets中的`DINGTALK_WEBHOOK`是否正确设置
+- 确认钉钉机器人未被禁用
+- 查看GitHub Actions日志中的错误信息
+- 使用测试脚本验证webhook连接
+
+### 2. 使用测试脚本
+项目中包含了一个测试脚本 `test-dingtalk.js`，可以用来验证钉钉webhook配置：
+
+```bash
+# 设置webhook地址并运行测试
+DINGTALK_WEBHOOK=你的webhook地址 node test-dingtalk.js
 ```
 
-## 🔍 故障排除
+测试脚本会：
+- 验证webhook地址格式
+- 发送测试消息到钉钉群
+- 显示详细的调试信息
+- 报告测试结果
 
-### 常见问题
+### 3. 常见问题解决
 
-1. **没有收到通知**
-   - 检查GitHub Secret `DINGTALK_WEBHOOK` 是否正确配置
-   - 确认钉钉机器人的安全设置（关键词/加签）
-   - 查看GitHub Actions日志中的钉钉通知步骤
+#### 问题1: GitHub Actions中看不到通知步骤执行
+**解决方案:**
+- 确保推送了最新的workflow配置
+- 检查workflow文件语法是否正确
+- 查看Actions页面是否有错误
 
-2. **通知格式异常**
-   - 检查钉钉机器人是否支持Markdown格式
-   - 确认Webhook地址是否正确
+#### 问题2: 通知步骤执行但钉钉群无消息
+**解决方案:**
+- 检查DINGTALK_WEBHOOK Secret是否正确设置
+- 确认webhook地址格式正确
+- 验证钉钉机器人状态是否正常
+- 使用测试脚本进行本地验证
 
-3. **部分通知缺失**
-   - 检查GitHub Actions工作流是否正常执行
-   - 确认相关步骤没有被跳过
+#### 问题3: 消息格式显示异常
+**解决方案:**
+- 当前配置使用text格式，兼容性最好
+- 如需markdown格式，可修改msgtype为"markdown"
+- 检查特殊字符是否需要转义
 
-### 调试方法
+### 4. 调试步骤
+1. 首先使用测试脚本验证webhook基本功能
+2. 检查GitHub Actions执行日志
+3. 确认Secret配置正确
+4. 验证钉钉机器人权限设置
 
-1. **查看GitHub Actions日志**
-   ```
-   GitHub仓库 → Actions → 选择具体的工作流运行 → 查看钉钉通知步骤的日志
-   ```
-
-2. **测试钉钉Webhook**
-   ```bash
-   curl -X POST "你的webhook地址" \
-        -H "Content-Type: application/json" \
-        -d '{
-          "msgtype": "text",
-          "text": {
-            "content": "测试消息"
-          }
-        }'
-   ```
-
-## ⚙️ 自定义配置
+## 自定义配置
 
 ### 修改通知内容
-
 编辑以下文件来自定义通知内容：
+- `.github/workflows/ci.yml` - CI检查通知
 - `.github/workflows/deploy.yml` - 部署通知
-- `.github/workflows/ci.yml` - CI通知
 
 ### 添加更多触发条件
+可以在workflow文件中添加更多的触发条件，如：
+- 特定分支的推送
+- 标签创建
+- 定时任务
 
-可以在工作流中添加更多的通知触发点：
-```yaml
-- name: Send custom notification
-  if: steps.some_step.outcome == 'failure'
-  # ... 钉钉通知配置
-```
+## 安全注意事项
 
-## 🔒 安全注意事项
+1. **保护Webhook地址**: 不要在代码中硬编码webhook地址
+2. **使用GitHub Secrets**: 始终通过Secrets管理敏感信息
+3. **关键词验证**: 确保钉钉机器人设置了安全关键词
+4. **权限控制**: 定期检查机器人权限和群组设置
 
-1. **保护Webhook地址**
-   - 不要在代码中硬编码Webhook地址
-   - 使用GitHub Secrets存储敏感信息
+## 支持的消息类型
 
-2. **限制机器人权限**
-   - 使用关键词或加签验证
-   - 定期更换Webhook地址
+当前配置支持以下消息类型：
+- `text`: 纯文本消息（当前使用）
+- `markdown`: Markdown格式消息
+- `link`: 链接消息
+- `actionCard`: 卡片消息
 
-3. **监控通知频率**
-   - 避免过于频繁的通知
-   - 合理设置通知触发条件
-
-## 📚 相关文档
-
-- [钉钉机器人开发文档](https://developers.dingtalk.com/document/app/custom-robot-access)
-- [GitHub Actions文档](https://docs.github.com/en/actions)
-- [GitHub Secrets管理](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+如需修改消息类型，请编辑workflow文件中的`msgtype`字段。

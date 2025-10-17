@@ -5,12 +5,15 @@
 :root {
   /* ========== Design Tokens (CSS Variables) ========== */
   /* Primary Colors */
-  --color-primary: #1890ff;
-  --color-primary-hover: #40a9ff;
-  --color-primary-active: #096dd9;
+  --color-primary: #722ed1;
+  --color-primary-hover: #9254de;
+  --color-primary-active: #531dab;
+  /* 适配用户偏好的紫色渐变风格 */
+  --color-primary-gradient-start: #667eea;
+  --color-primary-gradient-end: #764ba2;
   /* Primary gradient & shadow */
-  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
-  --shadow-primary: 0 2px 4px rgba(24, 144, 255, 0.25);
+  --gradient-primary: linear-gradient(135deg, var(--color-primary-gradient-start) 0%, var(--color-primary-gradient-end) 100%);
+  --shadow-primary: 0 2px 4px rgba(114, 46, 209, 0.25);
 
   /* Text Colors (preferred and legacy aliases) */
   --color-text: #333333;
@@ -25,7 +28,13 @@
   /* Backgrounds */
   --color-bg: #ffffff;
   --color-bg-muted: #fafafa;
-  --color-bg-highlight: #e6f4ff;
+  --color-bg-highlight: #f9f0ff;
+
+  /* 功能性颜色 */
+  --color-success: #52c41a;
+  --color-warning: #fa8c16;
+  --color-error: #ff4d4f;
+  --color-info: #1890ff;
 
   /* Legacy background alias */
   --bg-body: var(--color-bg);
@@ -41,8 +50,15 @@
   --radius-sm: 6px;
 
   /* Table */
-  --table-header-bg: #f7f9fc;
+  --table-header-bg: #f9f0ff;
   --table-border-color: #f0f0f0;
+
+  /* 首页卡片颜色 */
+  --home-card-primary: var(--color-primary);
+  --home-card-success: var(--color-success);
+  --home-card-warning: var(--color-warning);
+  --home-card-purple: #eb2f96;
+  --home-card-pink: #f5222d;
 
   /* Spacing Scale */
   --spacing-xs: 4px;

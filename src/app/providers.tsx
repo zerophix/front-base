@@ -17,7 +17,7 @@ export function AntdProvider({ children }: { children: React.ReactNode }) {
       locale={zhCN}
       theme={{
         token: {
-          colorPrimary: '#1890ff',
+          colorPrimary: 'var(--color-primary)',
           borderRadius: 4,
           fontSize: 14,
         },
@@ -26,27 +26,27 @@ export function AntdProvider({ children }: { children: React.ReactNode }) {
             labelFontSize: 14,
           },
           Input: {
-            activeBorderColor: '#1890ff',
-            hoverBorderColor: '#40a9ff',
+            activeBorderColor: 'var(--color-primary)',
+            hoverBorderColor: 'var(--color-primary-hover)',
           },
           Select: {
             optionSelectedBg: 'var(--color-bg-highlight)',
             optionActiveBg: 'var(--color-bg-muted)',
           },
           Button: {
-            colorPrimary: '#1890ff',
-            colorPrimaryHover: '#40a9ff',
-            colorPrimaryActive: '#096dd9',
+            colorPrimary: 'var(--color-primary)',
+            colorPrimaryHover: 'var(--color-primary-hover)',
+            colorPrimaryActive: 'var(--color-primary-active)',
           },
           Table: {
             headerBg: 'var(--table-header-bg)',
-            headerColor: '#595959',
+            headerColor: 'var(--color-text-secondary)',
             borderColor: 'var(--table-border-color)',
             rowHoverBg: 'var(--color-bg-muted)',
           },
           Menu: {
             itemSelectedBg: 'transparent', // 移除选中状态的背景色
-            itemSelectedColor: '#1890ff', // 保持选中状态的文字颜色
+            itemSelectedColor: 'var(--color-primary)', // 保持选中状态的文字颜色
             itemHoverBg: 'var(--color-bg-muted)', // 悬停时的背景色
             // 修复collapsed状态下图标居中问题
             collapsedIconSize: 16, // 设置collapsed状态下的图标大小

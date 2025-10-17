@@ -1,1 +1,0 @@
-export { EvaluationStandardTips } from './EvaluationStandardTips';

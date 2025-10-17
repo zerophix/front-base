@@ -157,7 +157,7 @@ const SidebarSearchComponent: React.FC<SidebarSearchProps> = ({
                     <Badge 
                       count={searchResultsCount} 
                       size="small" 
-                      style={{ backgroundColor: '#52c41a' }}
+                      style={{ backgroundColor: 'var(--color-success)' }}
                     />
                   )
                 }
@@ -254,7 +254,7 @@ const SidebarSearchComponent: React.FC<SidebarSearchProps> = ({
             <Badge 
               count={searchResultsCount} 
               size="small" 
-              style={{ backgroundColor: '#52c41a' }}
+              style={{ backgroundColor: 'var(--color-success)' }}
             />
           )
         }

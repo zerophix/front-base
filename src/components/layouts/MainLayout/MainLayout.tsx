@@ -5,6 +5,7 @@ import { Header } from '../Header/Header';
 import { Sidebar } from '../Sidebar/core/Sidebar';
 import styles from './MainLayout.module.css';
 import { useUIStore } from '@/store';
+import { SIZES } from '@/utils/constants/dimensions';
 
 export interface MainLayoutProps {
   children: React.ReactNode;
@@ -20,7 +21,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   }, []);
   const sidebarCollapsed = useUIStore((s) => s.sidebarCollapsed);
   const _toggleSidebar = useUIStore((s) => s.toggleSidebar);
-  const sidebarWidth = sidebarCollapsed ? '64px' : '264px';
+  const sidebarWidth = sidebarCollapsed ? `${SIZES.sidebarCollapsed}px` : `${SIZES.sidebarExpanded}px`;
   
   // 移动端状态管理
   const [isMobile, setIsMobile] = useState(false);

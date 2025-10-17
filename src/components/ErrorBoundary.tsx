@@ -90,7 +90,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 <details>
                   <summary>错误详情（开发环境）</summary>
                   <pre style={{ 
-                    background: '#f5f5f5', 
+                    background: 'var(--color-bg-muted)', 
                     padding: '10px', 
                     borderRadius: '4px',
                     fontSize: '12px',

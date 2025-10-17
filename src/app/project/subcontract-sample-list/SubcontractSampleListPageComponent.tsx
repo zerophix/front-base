@@ -9,6 +9,7 @@ import { IEditableRow, IEditableTableConfig, FieldType } from '@/types/form';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useRouteMeta } from '@/hooks';
+import { SIZES } from '@/utils/constants/dimensions';
 
 interface SampleDetail {
   key: string;
@@ -90,15 +91,15 @@ export default function SubcontractSampleListPage() {
         render: (_: any, __: any, index: number) => (
           <span style={{ 
             display: 'inline-block', 
-            width: '24px', 
-            height: '24px', 
-            lineHeight: '24px', 
+            width: `${SIZES.iconWidth}px`, 
+            height: `${SIZES.iconHeight}px`, 
+            lineHeight: `${SIZES.iconHeight}px`, 
             textAlign: 'center', 
-            background: '#f0f0f0', 
+            background: 'var(--color-bg-muted)', 
             borderRadius: '50%', 
             fontSize: '12px',
             fontWeight: 500,
-            color: '#666'
+            color: 'var(--color-text-secondary)'
           }}>
             {index + 1}
           </span>
@@ -221,13 +222,13 @@ export default function SubcontractSampleListPage() {
       
       <Form.Item 
         label="样品信息"
-        style={{ marginBottom: '24px' }}
+        style={{ marginBottom: `${SPACING.xl}px` }}
       >
         <div style={{ 
-          background: '#fff', 
+          background: 'var(--color-bg)', 
           borderRadius: '8px', 
           padding: '4px',
-          border: '1px solid #e8e8e8'
+          border: '1px solid var(--color-border)'
         }}>
           <EditableTable
             dataSource={tableData}

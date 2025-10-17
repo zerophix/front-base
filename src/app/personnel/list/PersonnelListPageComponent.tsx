@@ -9,6 +9,7 @@ import { EditableTable, FormActions } from '@/components/common';
 import { useTableData, useFormSubmit } from '@/hooks';
 import type { IPersonnel } from '@/types/personnel';
 import type { IEditableTableConfig } from '@/types/form';
+import { SPACING } from '@/utils/constants/dimensions';
 
 type PersonnelRow = IPersonnel & { key: string };
 
@@ -132,7 +133,7 @@ export default function PersonnelListPage() {
         />
       </Form.Item>
 
-      <div style={{ margin: '16px 0', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)' }}>
+      <div style={{ margin: `${SPACING.lg}px 0`, color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)' }}>
         说明：根据项目情况及部门配置时材料提供放置相似人员信息。
       </div>
 

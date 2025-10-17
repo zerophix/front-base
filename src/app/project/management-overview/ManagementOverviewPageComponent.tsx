@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { MainLayout, PageContainer } from '@/components/layouts/MainLayout';
 import { Card } from 'antd';
+import { SIZES, SPACING } from '@/utils/constants/dimensions';
 
 export default function ManagementOverviewPage() {
   const cards = useMemo(() => (
@@ -17,7 +18,7 @@ export default function ManagementOverviewPage() {
   return (
     <MainLayout>
       <PageContainer title="管理概览">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fit, minmax(${SIZES.cardMinWidth}px, 1fr))`, gap: `${SPACING.lg}px` }}>
           {cards.map((item, index) => (
             <Card key={`${item.title}-${index}`} title={item.title}>
               {item.content}

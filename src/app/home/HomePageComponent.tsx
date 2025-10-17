@@ -24,35 +24,35 @@ function HomePageComponent() {
       description: '创建和管理检测项目',
       icon: <ProjectOutlined />,
       path: '/project',
-      color: '#1890ff'
+      color: 'var(--home-card-primary)'
     },
     {
       title: '人员管理',
       description: '管理实验室人员信息',
       icon: <TeamOutlined />,
       path: '/personnel',
-      color: '#52c41a'
+      color: 'var(--home-card-success)'
     },
     {
       title: '设备管理',
       description: '设备台账和维护管理',
       icon: <ToolOutlined />,
       path: '/equipment',
-      color: '#fa8c16'
+      color: 'var(--home-card-warning)'
     },
     {
       title: '数据管理',
       description: '检测参数和对象管理',
       icon: <DatabaseOutlined />,
       path: '/data',
-      color: '#722ed1'
+      color: 'var(--home-card-purple)'
     },
     {
       title: '质量管理',
       description: '质量体系和文件管理',
       icon: <SafetyOutlined />,
       path: '/quality',
-      color: '#eb2f96'
+      color: 'var(--home-card-pink)'
     }
   ];
 
@@ -61,25 +61,25 @@ function HomePageComponent() {
       title: '进行中项目',
       value: 12,
       suffix: '个',
-      valueStyle: { color: '#1890ff' }
+      valueStyle: { color: 'var(--color-primary)' }
     },
     {
       title: '在岗人员',
       value: 28,
       suffix: '人',
-      valueStyle: { color: '#52c41a' }
+      valueStyle: { color: 'var(--color-success)' }
     },
     {
       title: '设备总数',
       value: 156,
       suffix: '台',
-      valueStyle: { color: '#fa8c16' }
+      valueStyle: { color: 'var(--color-warning)' }
     },
     {
       title: '本月检测',
       value: 89,
       suffix: '批次',
-      valueStyle: { color: '#722ed1' }
+      valueStyle: { color: 'var(--color-primary)' }
     }
   ];
 

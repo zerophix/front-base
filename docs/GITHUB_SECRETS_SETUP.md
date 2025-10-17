@@ -82,6 +82,6 @@ git push origin main
 ## 📚 相关文档
 
 - [VERCEL_SETUP.md](../VERCEL_SETUP.md) - Vercel环境变量配置
-- [DINGTALK_SETUP.md](../DINGTALK_SETUP.md) - 钉钉机器人配置
+- [DINGTALK_SETUP.md](DINGTALK_SETUP.md) - 钉钉机器人配置
 - [Vercel CLI文档](https://vercel.com/docs/cli)
 - [GitHub Secrets文档](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
