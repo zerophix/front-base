@@ -12,6 +12,16 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   
+  // API重写配置 - 将前端API请求代理到内网穿透地址
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${process.env.NATAPP_BASE_URL || 'http://dolphinmind.natapp1.cc'}/api/:path*`,
+      },
+    ];
+  },
+  
   // Webpack配置
   webpack(config) {
     // SVG处理

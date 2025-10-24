@@ -17,6 +17,13 @@ export const getApiBaseUrl = (): string => {
 };
 
 /**
+ * 获取内网穿透地址
+ */
+export const getNatappBaseUrl = (): string => {
+  return process.env.NATAPP_BASE_URL || 'http://dolphinmind.natapp1.cc';
+};
+
+/**
  * API版本配置
  */
 export const API_VERSION = {
