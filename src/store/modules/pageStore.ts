@@ -1,37 +1,26 @@
 /**
  * 页面配置状态管理模块
  * 负责页面标题、面包屑、记录编号
+ * 注意：页面状态通常不需要持久化，因为它们是临时的
  */
 
 import { create } from 'zustand';
+import type { PageStore, BreadcrumbItem } from '@/types/core';
 
-interface IPageState {
-  pageTitle: string;
-  breadcrumbs: Array<{ label: string; href?: string }>;
-  recordNumber: string;
-  
-  setPageTitle: (title: string) => void;
-  setBreadcrumbs: (breadcrumbs: Array<{ label: string; href?: string }>) => void;
-  setRecordNumber: (recordNumber: string) => void;
-  
-  // 批量设置
-  setPageConfig: (config: {
-    title: string;
-    breadcrumbs?: Array<{ label: string; href?: string }>;
-    recordNumber?: string;
-  }) => void;
-}
-
-export const usePageStore = create<IPageState>()((set) => ({
+export const usePageStore = create<PageStore>()((set) => ({
   pageTitle: '',
   breadcrumbs: [],
   recordNumber: '',
   
-  setPageTitle: (pageTitle) => set({ pageTitle }),
-  setBreadcrumbs: (breadcrumbs) => set({ breadcrumbs }),
-  setRecordNumber: (recordNumber) => set({ recordNumber }),
+  setPageTitle: (pageTitle: string) => set({ pageTitle }),
+  setBreadcrumbs: (breadcrumbs: readonly BreadcrumbItem[]) => set({ breadcrumbs }),
+  setRecordNumber: (recordNumber: string) => set({ recordNumber }),
   
-  setPageConfig: ({ title, breadcrumbs = [], recordNumber = '' }) => set({
+  setPageConfig: ({ title, breadcrumbs = [], recordNumber = '' }: {
+    title: string;
+    breadcrumbs?: readonly BreadcrumbItem[];
+    recordNumber?: string;
+  }) => set({
     pageTitle: title,
     breadcrumbs,
     recordNumber,

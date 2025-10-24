@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { AntdProvider } from './providers';
 import AntdRegistry from './AntdRegistry';
 import PerformanceMonitor from './PerformanceMonitor';
-import { PreloadStrategy } from '@/components/common/PreloadStrategy';
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,7 +20,6 @@ export default function RootLayout({
         <AntdRegistry>
           <AntdProvider>
             {children}
-            <PreloadStrategy />
           </AntdProvider>
         </AntdRegistry>
         <PerformanceMonitor />

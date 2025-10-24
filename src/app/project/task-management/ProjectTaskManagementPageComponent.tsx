@@ -23,12 +23,11 @@ type TaskRow = {
 };
 
 export default function ProjectTaskManagementPage() {
-  const keyCounter = useRef(0);
-
-  // 任务表格
+  const [form] = Form.useForm();
+  
   const { dataSource, setDataSource, createDefaultRow } = useTableData<TaskRow>({
     createDefaultRow: () => ({
-      key: `item_${++keyCounter.current}`,
+      key: Date.now().toString(),
       taskName: '',
       taskType: '',
       priority: '',
@@ -44,7 +43,7 @@ export default function ProjectTaskManagementPage() {
 
   // 表单提交
   const { submitting, saving, handleSubmit, handleSave } = useFormSubmit({
-    form: null as any,
+    form,
     onSubmit: async (values) => {
       const data = {
         ...values,

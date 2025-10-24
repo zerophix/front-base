@@ -3,7 +3,8 @@
  * 支持token刷新、安全存储和自动过期处理
  */
 
-import { createError, globalErrorHandler } from './errorHandler';
+import { createError, globalErrorHandler } from '@/utils/errorHandler';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
 /**
  * Token类型定义
@@ -158,38 +159,54 @@ class AuthManager {
    */
   async login(username: string, password: string): Promise<AuthState> {
     try {
-      // 这里应该调用实际的登录API
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(`${API_BASE}/v1/login/account`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Accept: 'application/json',
         },
         body: JSON.stringify({ username, password }),
       });
 
-      if (!response.ok) {
-        throw createError.auth('登录失败');
+      const json = await response.json();
+      
+      // 根据后端返回的响应码判断登录结果
+      if (json.code === '0000') {
+        // 登录成功
+        const user: UserInfo = {
+          id: username,
+          username: json.data?.username || username,
+          email: json.data?.email || '',
+          roles: json.data?.roles || ['user'],
+          permissions: json.data?.permissions || [],
+        };
+
+        // 由于后端暂时没有返回JWT token，我们暂时创建一个简单的token标识
+        const longTTL = Date.now() + 24 * 60 * 60 * 1000; // 24小时
+        const tokens: TokenPair = {
+          accessToken: `session_${username}_${Date.now()}`,
+          refreshToken: `refresh_${username}_${Date.now()}`,
+          expiresAt: longTTL,
+          refreshExpiresAt: longTTL + 7 * 24 * 60 * 60 * 1000, // 7天
+        };
+
+        this.storage.setTokens(tokens);
+        this.storage.setUserInfo(user);
+
+        return {
+          isAuthenticated: true,
+          user,
+          tokens,
+        };
+      } else {
+        // 登录失败
+        throw createError.auth(json.message || '用户名或密码错误');
       }
-
-      const data = await response.json();
-      const tokens: TokenPair = {
-        accessToken: data.accessToken,
-        refreshToken: data.refreshToken,
-        expiresAt: Date.now() + (data.expiresIn * 1000), // 转换为时间戳
-        refreshExpiresAt: Date.now() + (data.refreshExpiresIn * 1000),
-      };
-
-      const user: UserInfo = data.user;
-
-      this.storage.setTokens(tokens);
-      this.storage.setUserInfo(user);
-
-      return {
-        isAuthenticated: true,
-        user,
-        tokens,
-      };
     } catch (error) {
+      // 如果是网络错误或其他错误
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        throw createError.auth('无法连接到服务器，请检查网络连接');
+      }
       globalErrorHandler.handle(error);
       throw error;
     }
@@ -200,27 +217,39 @@ class AuthManager {
    */
   async logout(): Promise<void> {
     try {
-      const tokens = this.storage.getTokens();
-      
-      // 调用服务端登出API（可选）
-      if (tokens?.refreshToken) {
-        await fetch('/api/auth/logout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${tokens.accessToken}`,
-          },
-          body: JSON.stringify({ refreshToken: tokens.refreshToken }),
-        }).catch(() => {
-          // 忽略登出API错误，继续清除本地数据
-        });
-      }
-
+      // 直接清理本地认证数据，避免调用不存在的登出接口
       this.storage.clear();
     } catch (error) {
       globalErrorHandler.handle(error);
-      // 即使出错也要清除本地数据
       this.storage.clear();
+    }
+  }
+
+  async loginWithToken(token: string, provider: 'wechat' | 'account' = 'wechat'): Promise<AuthState> {
+    try {
+      const longTTL = Date.now() + 365 * 24 * 60 * 60 * 1000;
+      const tokens: TokenPair = {
+        accessToken: String(token),
+        refreshToken: String(token),
+        expiresAt: longTTL,
+        refreshExpiresAt: longTTL,
+      };
+
+      const user: UserInfo = {
+        id: provider,
+        username: provider === 'wechat' ? 'WeChat User' : 'User',
+        email: '',
+        roles: ['user'],
+        permissions: [],
+      };
+
+      this.storage.setTokens(tokens);
+      this.storage.setUserInfo(user);
+
+      return { isAuthenticated: true, user, tokens };
+    } catch (error) {
+      globalErrorHandler.handle(error);
+      throw error;
     }
   }
 
@@ -231,7 +260,7 @@ class AuthManager {
     const tokens = this.storage.getTokens();
     const user = this.storage.getUserInfo();
 
-    if (!tokens || !user) {
+    if (!tokens && !user) {
       return {
         isAuthenticated: false,
         user: null,
@@ -239,8 +268,8 @@ class AuthManager {
       };
     }
 
-    // 检查刷新令牌是否过期
-    if (Date.now() > tokens.refreshExpiresAt) {
+    // 检查刷新令牌是否过期（仅在存在令牌时）
+    if (tokens && Date.now() > tokens.refreshExpiresAt) {
       this.storage.clear();
       return {
         isAuthenticated: false,
@@ -250,7 +279,7 @@ class AuthManager {
     }
 
     return {
-      isAuthenticated: true,
+      isAuthenticated: Boolean(user) || Boolean(tokens),
       user,
       tokens,
     };

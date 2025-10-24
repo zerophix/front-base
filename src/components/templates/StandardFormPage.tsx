@@ -13,7 +13,7 @@
 import React from 'react';
 import { Form } from 'antd';
 import type { FormInstance } from 'antd';
-import { BaseFormPage } from './BaseFormPage';
+import { BaseFormPage } from '@/components/templates/BaseFormPage';
 import { FieldGroup, FormActions } from '@/components/common';
 import type { FieldConfig } from '@/components/common/FieldGroup';
 import { useFormSubmit, useRouteMeta } from '@/hooks';

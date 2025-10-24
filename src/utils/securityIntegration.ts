@@ -3,8 +3,8 @@
  * 展示如何在应用中集成和使用安全管理器
  */
 
-import { securityManager, initializeSecurity, getSecurityStatus } from './securityManager';
-import { SecurityEventType } from './logger';
+import { securityManager, initializeSecurity, getSecurityStatus } from '@/utils/securityManager';
+import { SecurityEventType } from '@/utils/logger';
 
 /**
  * 应用启动时的安全初始化

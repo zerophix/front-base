@@ -1,48 +1,33 @@
 /**
- * HTTP 客户端封装
- * 基于 fetch API 实现，集成缓存层
- * 彻底重写版本 - 零兼容旧代码
+ * API 客户端实现
+ * 基于 fetch API，支持拦截器、缓存和错误处理
  */
 
 import { 
-  IApiClientConfig, 
-  IRequestConfig, 
+  ApiClientConfig, 
+  RequestConfig, 
   HttpMethod, 
-  ApiError,
+  ApiErrorResponse,
   RequestInterceptor,
   ResponseInterceptor,
-  ErrorInterceptor 
-} from '@/types/api';
-import { IApiResponse } from '@/types/common';
-import { apiCache } from './cache';
+  ErrorInterceptor,
+  ApiResponse,
+  ApiStatusCode
+} from '@/types/core/api';
+import type { Result } from '@/types/core/base';
+import { apiCache } from '@/services/api/cache';
 
 /**
- * API 客户端类 - 集成缓存
+ * API 客户端类
  */
 export class ApiClient {
-  private config: IApiClientConfig;
+  private config: ApiClientConfig;
   private requestInterceptors: RequestInterceptor[] = [];
   private responseInterceptors: ResponseInterceptor[] = [];
   private errorInterceptors: ErrorInterceptor[] = [];
-  private cacheEnabled: boolean = true;
 
-  constructor(config: IApiClientConfig) {
-    this.config = {
-      timeout: 10000,
-      withCredentials: true,
-      ...config,
-    };
-
-    // 注册配置中的拦截器
-    if (config.requestInterceptors) {
-      this.requestInterceptors.push(...config.requestInterceptors);
-    }
-    if (config.responseInterceptors) {
-      this.responseInterceptors.push(...config.responseInterceptors);
-    }
-    if (config.errorInterceptors) {
-      this.errorInterceptors.push(...config.errorInterceptors);
-    }
+  constructor(config: ApiClientConfig) {
+    this.config = config;
   }
 
   /**
@@ -67,9 +52,9 @@ export class ApiClient {
   }
 
   /**
-   * 执行请求拦截器
+   * 运行请求拦截器
    */
-  private async runRequestInterceptors(config: IRequestConfig): Promise<IRequestConfig> {
+  private async runRequestInterceptors(config: RequestConfig): Promise<RequestConfig> {
     let modifiedConfig = config;
     for (const interceptor of this.requestInterceptors) {
       modifiedConfig = await interceptor(modifiedConfig);
@@ -78,274 +63,203 @@ export class ApiClient {
   }
 
   /**
-   * 执行响应拦截器
+   * 运行响应拦截器
    */
-  private async runResponseInterceptors<T>(response: IApiResponse<T>): Promise<IApiResponse<T>> {
+  private async runResponseInterceptors<T>(response: ApiResponse<T>): Promise<ApiResponse<T>> {
     let modifiedResponse = response;
     for (const interceptor of this.responseInterceptors) {
-      modifiedResponse = await interceptor(modifiedResponse);
+      modifiedResponse = await interceptor(modifiedResponse) as ApiResponse<T>;
     }
     return modifiedResponse;
   }
 
   /**
-   * 执行错误拦截器
+   * 运行错误拦截器
    */
-  private async runErrorInterceptors(error: ApiError): Promise<never> {
+  private async runErrorInterceptors(error: ApiErrorResponse): Promise<ApiErrorResponse> {
     let modifiedError = error;
     for (const interceptor of this.errorInterceptors) {
-      try {
-        modifiedError = await interceptor(modifiedError);
-      } catch (e) {
-        modifiedError = e as ApiError;
-      }
+      modifiedError = await interceptor(modifiedError);
     }
-    throw modifiedError;
+    return modifiedError;
   }
 
   /**
    * 构建完整URL
    */
-  private buildUrl(url: string, params?: any): string {
+  private buildUrl(url: string, params?: Record<string, unknown>): string {
     const fullUrl = url.startsWith('http') ? url : `${this.config.baseURL}${url}`;
     
-    if (!params) return fullUrl;
+    if (!params || Object.keys(params).length === 0) {
+      return fullUrl;
+    }
 
-    const queryString = Object.keys(params)
-      .filter(key => params[key] !== undefined && params[key] !== null)
-      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
-      .join('&');
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        searchParams.append(key, String(value));
+      }
+    });
 
-    return queryString ? `${fullUrl}?${queryString}` : fullUrl;
+    const separator = fullUrl.includes('?') ? '&' : '?';
+    return `${fullUrl}${separator}${searchParams.toString()}`;
   }
 
   /**
    * 核心请求方法
    */
-  async request<T = any>(config: IRequestConfig): Promise<IApiResponse<T>> {
+  private async request<T = unknown>(
+    url: string,
+    method: keyof typeof HttpMethod = 'GET',
+    data?: unknown,
+    config?: RequestConfig
+  ): Promise<Result<T, ApiErrorResponse>> {
     try {
-      // 执行请求拦截器
-      const modifiedConfig = await this.runRequestInterceptors(config);
-
-      // 构建请求配置
-      const { url, method, data, params, headers = {}, timeout = this.config.timeout } = modifiedConfig;
-      const fullUrl = this.buildUrl(url, params);
-
-      // 合并headers
-      const mergedHeaders: Record<string, string> = {
-        'Content-Type': 'application/json',
-        ...this.config.headers,
-        ...headers,
+      // 合并配置
+      const requestConfig: RequestConfig = {
+        timeout: this.config.timeout,
+        retries: this.config.retries,
+        retryDelay: this.config.retryDelay,
+        headers: { ...this.config.defaultHeaders },
+        cache: this.config.enableCache,
+        cacheTTL: this.config.defaultCacheTTL,
+        ...config,
       };
 
-      // 创建 AbortController 用于超时控制
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), timeout);
+      // 运行请求拦截器
+      const processedConfig = await this.runRequestInterceptors(requestConfig);
+
+      // 构建完整URL
+      const fullUrl = this.buildUrl(url, processedConfig.params);
+
+      // 准备请求选项
+      const requestOptions: RequestInit = {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          ...processedConfig.headers,
+        },
+      };
+
+      // 添加请求体（如果不是 GET 请求）
+      if (data && method !== 'GET') {
+        requestOptions.body = JSON.stringify(data);
+      }
 
       // 发送请求
-      const response = await fetch(fullUrl, {
-        method,
-        headers: mergedHeaders,
-        body: data ? JSON.stringify(data) : undefined,
-        credentials: this.config.withCredentials ? 'include' : 'same-origin',
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
+      const response = await fetch(fullUrl, requestOptions);
 
       // 解析响应
-      let responseData: IApiResponse<T>;
+      let responseData: T;
       const contentType = response.headers.get('content-type');
-      
-      if (contentType?.includes('application/json')) {
+      if (contentType && contentType.includes('application/json')) {
         responseData = await response.json();
       } else {
-        // 非JSON响应，包装成标准格式
-        const text = await response.text();
-        responseData = {
-          code: response.status,
-          message: response.statusText,
-          data: text as any,
-        };
+        responseData = await response.text() as unknown as T;
       }
 
       // 检查HTTP状态码
       if (!response.ok) {
-        throw new ApiError(
-          responseData.code || response.status,
-          responseData.message || response.statusText,
-          responseData.data,
-        );
+        const error: ApiErrorResponse = {
+          code: `HTTP_${response.status}`,
+          message: response.statusText || 'Request failed',
+          statusCode: response.status as any,
+          path: url,
+          method: method as any,
+          timestamp: Date.now().toString(),
+          details: responseData as Record<string, unknown>,
+        };
+        
+        const processedError = await this.runErrorInterceptors(error);
+        return { success: false, error: processedError };
       }
 
-      // 执行响应拦截器
-      const modifiedResponse = await this.runResponseInterceptors(responseData);
+      // 构建成功响应
+      const apiResponse: ApiResponse<T> = {
+        success: true,
+        data: responseData,
+        message: 'Success',
+        code: response.status as any,
+        timestamp: Date.now().toString(),
+        traceId: response.headers.get('x-trace-id') || `trace-${Date.now()}`,
+      };
 
-      return modifiedResponse;
+      // 运行响应拦截器
+      const processedResponse = await this.runResponseInterceptors(apiResponse);
+      return { success: true, data: processedResponse.data };
+
     } catch (error) {
-      // 处理错误
-      if (error instanceof ApiError) {
-        return this.runErrorInterceptors(error);
-      }
-
-      // 处理网络错误
-      if (error instanceof Error) {
-        if (error.name === 'AbortError') {
-          return this.runErrorInterceptors(
-            new ApiError(408, '请求超时', { timeout: config.timeout }),
-          );
-        }
-        return this.runErrorInterceptors(
-          new ApiError(0, error.message || '网络错误'),
-        );
-      }
-
-      return this.runErrorInterceptors(
-        new ApiError(0, '未知错误'),
-      );
+      const apiError: ApiErrorResponse = {
+        code: 'NETWORK_ERROR',
+        message: error instanceof Error ? error.message : 'Network request failed',
+        statusCode: 0 as any,
+        path: url,
+        method: method as any,
+        timestamp: Date.now().toString(),
+        details: error as Record<string, unknown>,
+      };
+      
+      const processedError = await this.runErrorInterceptors(apiError);
+      return { success: false, error: processedError };
     }
   }
 
   /**
-   * GET 请求 - 自动缓存
+   * GET 请求
    */
-  async get<T = any>(url: string, params?: any, config?: Partial<IRequestConfig> & { noCache?: boolean; cacheTTL?: number }): Promise<IApiResponse<T>> {
+  async get<T = unknown>(url: string, config?: RequestConfig): Promise<Result<T, ApiErrorResponse>> {
+    const cacheKey = `GET:${url}:${JSON.stringify(config?.params || {})}`;
+    
     // 检查缓存
-    if (this.cacheEnabled && !config?.noCache) {
-      const cached = apiCache.get<IApiResponse<T>>(url, params);
+    if (config?.cache !== false && this.config.enableCache) {
+      const cached = await apiCache.get<T>(cacheKey);
       if (cached) {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[API Cache] HIT:', url);
-        }
-        return cached;
+        return { success: true, data: cached };
       }
     }
 
-    // 发起请求
-    const response = await this.request<T>({
-      url,
-      method: HttpMethod.GET,
-      params,
-      ...config,
-    });
+    const result = await this.request<T>(url, 'GET', undefined, config);
 
-    // 缓存响应
-    if (this.cacheEnabled && !config?.noCache) {
-      apiCache.set(url, response, params, config?.cacheTTL);
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[API Cache] SET:', url);
-      }
+    // 缓存成功响应
+    if (result.success && config?.cache !== false && this.config.enableCache) {
+      await apiCache.set(cacheKey, result.data, config?.cacheTTL);
     }
 
-    return response;
+    return result;
   }
 
   /**
-   * POST 请求 - 自动失效缓存
+   * POST 请求
    */
-  async post<T = any>(url: string, data?: any, config?: Partial<IRequestConfig> & { invalidateCache?: string | RegExp }): Promise<IApiResponse<T>> {
-    const response = await this.request<T>({
-      url,
-      method: HttpMethod.POST,
-      data,
-      ...config,
-    });
-
-    // POST 后失效相关缓存
-    if (config?.invalidateCache) {
-      apiCache.invalidate(config.invalidateCache);
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[API Cache] INVALIDATE:', config.invalidateCache);
-      }
-    } else {
-      // 默认失效当前路径缓存
-      apiCache.delete(url);
-    }
-
-    return response;
+  async post<T = unknown, D = unknown>(url: string, data?: D, config?: RequestConfig): Promise<Result<T, ApiErrorResponse>> {
+    return this.request<T>(url, 'POST', data, config);
   }
 
   /**
-   * PUT 请求 - 自动失效缓存
+   * PUT 请求
    */
-  async put<T = any>(url: string, data?: any, config?: Partial<IRequestConfig> & { invalidateCache?: string | RegExp }): Promise<IApiResponse<T>> {
-    const response = await this.request<T>({
-      url,
-      method: HttpMethod.PUT,
-      data,
-      ...config,
-    });
-
-    // PUT 后失效相关缓存
-    if (config?.invalidateCache) {
-      apiCache.invalidate(config.invalidateCache);
-    } else {
-      apiCache.delete(url);
-    }
-
-    return response;
+  async put<T = unknown, D = unknown>(url: string, data?: D, config?: RequestConfig): Promise<Result<T, ApiErrorResponse>> {
+    return this.request<T>(url, 'PUT', data, config);
   }
 
   /**
-   * PATCH 请求 - 自动失效缓存
+   * PATCH 请求
    */
-  async patch<T = any>(url: string, data?: any, config?: Partial<IRequestConfig> & { invalidateCache?: string | RegExp }): Promise<IApiResponse<T>> {
-    const response = await this.request<T>({
-      url,
-      method: HttpMethod.PATCH,
-      data,
-      ...config,
-    });
-
-    // PATCH 后失效相关缓存
-    if (config?.invalidateCache) {
-      apiCache.invalidate(config.invalidateCache);
-    } else {
-      apiCache.delete(url);
-    }
-
-    return response;
+  async patch<T = unknown, D = unknown>(url: string, data?: D, config?: RequestConfig): Promise<Result<T, ApiErrorResponse>> {
+    return this.request<T>(url, 'PATCH', data, config);
   }
 
   /**
-   * DELETE 请求 - 自动失效缓存
+   * DELETE 请求
    */
-  async delete<T = any>(url: string, params?: any, config?: Partial<IRequestConfig> & { invalidateCache?: string | RegExp }): Promise<IApiResponse<T>> {
-    const response = await this.request<T>({
-      url,
-      method: HttpMethod.DELETE,
-      params,
-      ...config,
-    });
-
-    // DELETE 后失效相关缓存
-    if (config?.invalidateCache) {
-      apiCache.invalidate(config.invalidateCache);
-    } else {
-      apiCache.delete(url, params);
-    }
-
-    return response;
-  }
-
-  /**
-   * 清空所有缓存
-   */
-  clearCache(): void {
-    apiCache.clear();
-  }
-
-  /**
-   * 获取缓存统计
-   */
-  getCacheStats() {
-    return apiCache.getStats();
+  async delete<T = unknown>(url: string, config?: RequestConfig): Promise<Result<T, ApiErrorResponse>> {
+    return this.request<T>(url, 'DELETE', undefined, config);
   }
 }
 
 /**
- * 创建默认的API客户端实例
+ * 创建 API 客户端实例
  */
-export const createApiClient = (config: IApiClientConfig): ApiClient => {
+export const createApiClient = (config: ApiClientConfig): ApiClient => {
   return new ApiClient(config);
 };

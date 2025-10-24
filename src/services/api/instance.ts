@@ -3,7 +3,7 @@
  * 创建和导出默认的 API 客户端实例
  */
 
-import { createApiClient } from './client';
+import { createApiClient } from '@/services/api/client';
 import {
   tokenRequestInterceptor,
   csrfRequestInterceptor,
@@ -13,7 +13,7 @@ import {
   responseInterceptor,
   businessCodeResponseInterceptor,
   errorHandlerInterceptor,
-} from './interceptors';
+} from '@/services/api/interceptors';
 
 /**
  * API 基础URL配置
@@ -34,27 +34,30 @@ const getBaseURL = (): string => {
 export const apiClient = createApiClient({
   baseURL: getBaseURL(),
   timeout: 30000, // 30秒超时
-  withCredentials: true,
-  requestInterceptors: [
-    requestInterceptor,
-    tokenRequestInterceptor,
-    csrfRequestInterceptor,
-    logRequestInterceptor,
-  ],
-  responseInterceptors: [
-    responseInterceptor,
-    logResponseInterceptor,
-    businessCodeResponseInterceptor,
-  ],
-  errorInterceptors: [
-    errorHandlerInterceptor,
-  ],
+  retries: 3,
+  retryDelay: 1000,
+  defaultHeaders: {
+    'Content-Type': 'application/json',
+  },
+  enableCache: true,
+  defaultCacheTTL: 300000, // 5分钟
 });
+
+// 添加拦截器
+apiClient.addRequestInterceptor(requestInterceptor);
+apiClient.addRequestInterceptor(tokenRequestInterceptor);
+apiClient.addRequestInterceptor(csrfRequestInterceptor);
+apiClient.addRequestInterceptor(logRequestInterceptor);
+
+apiClient.addResponseInterceptor(responseInterceptor);
+apiClient.addResponseInterceptor(logResponseInterceptor);
+apiClient.addResponseInterceptor(businessCodeResponseInterceptor);
+
+apiClient.addErrorInterceptor(errorHandlerInterceptor);
 
 /**
  * 导出便捷方法
  */
-export const request = apiClient.request.bind(apiClient);
 export const get = apiClient.get.bind(apiClient);
 export const post = apiClient.post.bind(apiClient);
 export const put = apiClient.put.bind(apiClient);
@@ -64,6 +67,6 @@ export const del = apiClient.delete.bind(apiClient);
 /**
  * 导出类型
  */
-export type { ApiClient } from './client';
-export * from './interceptors';
+export type { ApiClient } from '@/services/api/client';
+export * from '@/services/api/interceptors';
 

@@ -6,9 +6,9 @@ import styles from './Sidebar.module.css';
 import { routes } from '@/config/routes';
 import { buildMenuTree, filterMenuItems, toAntdMenuItems, collectSearchResults } from '@/config/routes/helpers';
 import { useUIStore } from '@/store';
-import { SidebarSearch } from '../navigation/SidebarSearch';
-import { SidebarMenu } from '../navigation/SidebarMenu';
-import { SidebarToggle } from '../controls/SidebarToggle';
+import { SidebarSearch } from '@/components/layouts/Sidebar/navigation/SidebarSearch';
+import { SidebarMenu } from '@/components/layouts/Sidebar/navigation/SidebarMenu';
+import { SidebarToggle } from '@/components/layouts/Sidebar/controls/SidebarToggle';
 
 // 将菜单树构建移到组件外部，避免重复计算
 const menuTree = buildMenuTree(routes);
@@ -98,7 +98,7 @@ const SidebarComponent: React.FC = () => {
         });
         return keys;
       };
-      setOpenKeys(getAllKeys(menuItems));
+      setOpenKeys(getAllKeys(menuItems) as readonly string[]);
     }
     // 非搜索时不自动修改 openKeys，保持静态
   }, [debouncedQuery, menuItems, setOpenKeys]);

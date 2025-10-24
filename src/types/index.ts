@@ -26,9 +26,8 @@ export {
   isValidModule,
 } from './routes';
 
-// 服务和状态管理类型
+// 服务类型
 export * from './services';
-export * from './store';
 
 // 侧边栏类型（解决BreadcrumbItem命名冲突）
 export type {
@@ -65,17 +64,85 @@ export {
   hasChildren,
 } from './sidebar';
 
-// 通用类型
-export * from './common';
+// 核心类型系统 - 新的严格类型定义
+export * as Core from './core';
 
-// 表单类型
-export * from './form';
-
-// API类型
-export * from './api';
-
-// 业务领域类型
+// 业务类型定义（保持向后兼容）
 export * from './personnel';
 export * from './equipment';
 export * from './quality';
+
+// Legacy 类型（向后兼容）
+export * as Legacy from './common';
+export * as LegacyForm from './form';
+export * as LegacySidebar from './sidebar';
+
+// 常用类型的直接导出（从核心类型系统）
+export type {
+  ID,
+  Timestamp,
+  StatusType,
+  BaseEntity,
+  CreateEntityInput,
+  UpdateEntityInput,
+  PaginationParams,
+  PaginationResponse,
+  SortParams,
+  BaseQueryParams,
+  Option,
+  AppError,
+  Result,
+  AsyncStatusType,
+  AsyncState,
+  FormModeType,
+  FieldTypeType,
+  FieldConfig,
+  FormConfig,
+  FormState,
+  FormActions,
+  TableColumn,
+  TableRowAction,
+  TableConfig,
+  ComponentSizeType,
+  ComponentVariantType,
+  ApiResponse,
+  ApiClient,
+  UIState,
+  UserState,
+  PageState,
+} from './core';
+
+export {
+  Status,
+  AsyncStatus,
+  FormMode,
+  FieldType,
+  ComponentSize,
+  ComponentVariant,
+  TypeUtils,
+} from './core';
+
+// 向后兼容的类型别名
+import type { ApiResponse, PaginationResponse, BaseQueryParams } from './core';
+export type IApiResponse<T = any> = ApiResponse<T>;
+export type IPaginationResponse<T = any> = PaginationResponse<T>;
+export type IPageQueryParams = BaseQueryParams;
+
+// 类型迁移别名（向后兼容）
+export type {
+  // 从 common.ts 迁移到 core
+  ID as LegacyID,
+  IApiResponse as LegacyApiResponse,
+  IPaginationParams as LegacyPaginationParams,
+  IPaginationResponse as LegacyPaginationResponse,
+  IBaseRecord as LegacyBaseRecord,
+  IOption as LegacyOption,
+} from './common';
+
+export type {
+  // 从 form.ts 迁移到 core
+  FormMode as LegacyFormMode,
+  IFieldConfig as LegacyFieldConfig,
+  IFormConfig as LegacyFormConfig,
+} from './form';
 

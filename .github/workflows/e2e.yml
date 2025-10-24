@@ -1,0 +1,177 @@
+name: E2E Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    # 每天凌晨2点运行E2E测试
+    - cron: '0 2 * * *'
+
+jobs:
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Build application
+        run: npm run build
+
+      - name: Start application
+        run: |
+          npm start &
+          # 等待应用启动
+          npx wait-on http://localhost:3000 --timeout 60000
+        env:
+          NODE_ENV: test
+
+      - name: Run E2E tests on ${{ matrix.browser }}
+        run: npx playwright test --project=${{ matrix.browser }}
+        env:
+          NODE_ENV: test
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-results-${{ matrix.browser }}
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
+
+  e2e-report:
+    name: Generate E2E Report
+    runs-on: ubuntu-latest
+    needs: e2e-tests
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download all test results
+        uses: actions/download-artifact@v4
+        with:
+          path: test-results-all/
+
+      - name: Merge test results
+        run: |
+          mkdir -p merged-results
+          find test-results-all/ -name "*.json" -exec cp {} merged-results/ \;
+
+      - name: Generate HTML report
+        run: |
+          npx playwright merge-reports --reporter=html merged-results/
+        continue-on-error: true
+
+      - name: Upload merged report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-merged-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Deploy report to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./playwright-report
+          destination_dir: e2e-reports/${{ github.run_number }}
+
+  notify-e2e:
+    name: E2E Test Notification
+    runs-on: ubuntu-latest
+    needs: [e2e-tests, e2e-report]
+    if: always()
+    steps:
+      - name: Send DingTalk notification
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const webhook = process.env.DINGTALK_WEBHOOK;
+            if (!webhook) {
+              console.log('❌ 钉钉webhook未配置');
+              return;
+            }
+
+            const e2eTestsResult = '${{ needs.e2e-tests.result }}';
+            const e2eReportResult = '${{ needs.e2e-report.result }}';
+            
+            let status, emoji;
+            if (e2eTestsResult === 'success') {
+              status = '✅ E2E测试全部通过';
+              emoji = '✅';
+            } else if (e2eTestsResult === 'failure') {
+              status = '❌ E2E测试失败';
+              emoji = '❌';
+            } else {
+              status = '⚠️ E2E测试部分完成';
+              emoji = '⚠️';
+            }
+
+            const message = {
+              msgtype: "text",
+              text: {
+                content: `GitHub E2E测试 监控通知\n\n` +
+                        `${emoji} E2E测试完成\n\n` +
+                        `项目: ${context.repo.repo}\n` +
+                        `分支: ${context.ref.replace('refs/heads/', '')}\n` +
+                        `提交: ${context.sha.substring(0, 7)}\n\n` +
+                        `测试结果:\n` +
+                        `- E2E测试: ${e2eTestsResult === 'success' ? '✅' : '❌'} ${e2eTestsResult}\n` +
+                        `- 测试报告: ${e2eReportResult === 'success' ? '✅' : '❌'} ${e2eReportResult}\n\n` +
+                        `总体状态: ${status}\n` +
+                        `时间: ${new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'})}\n` +
+                        `详情: https://github.com/${context.repo.owner}/${context.repo.repo}/actions`
+              }
+            };
+
+            try {
+              const response = await fetch(webhook, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(message)
+              });
+
+              if (response.ok) {
+                console.log('✅ 钉钉E2E测试通知发送成功');
+              } else {
+                console.log('❌ 钉钉E2E测试通知发送失败:', response.status);
+              }
+            } catch (error) {
+              console.log('❌ 钉钉E2E测试通知发送错误:', error.message);
+            }
+        env:
+          DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}

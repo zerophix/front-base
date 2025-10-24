@@ -3,7 +3,7 @@
  * 提供统一的数据验证接口，确保前后端验证一致性
  */
 
-import { validateInput, ValidationRule, securityValidationRules } from './security';
+import { validateInput, ValidationRule, securityValidationRules } from '@/utils/security';
 
 /**
  * 验证结果接口

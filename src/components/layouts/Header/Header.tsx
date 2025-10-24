@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Button, Avatar } from 'antd';
+import { Button, Avatar, App } from 'antd';
 import {
   DownloadOutlined,
   ShareAltOutlined,
@@ -13,6 +13,9 @@ import {
   RightOutlined,
 } from '@ant-design/icons';
 import styles from './Header.module.css';
+import { useRouter } from 'next/navigation';
+import { logout } from '@/utils/auth';
+import { message } from 'antd';
 
 export interface HeaderProps {
   className?: string;
@@ -29,6 +32,8 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [mounted, setMounted] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const { message } = App.useApp();
 
   useEffect(() => {
     setMounted(true);
@@ -123,7 +128,22 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
 
               <div className={styles.menuDivider}></div>
 
-              <Button className={styles.logoutBtn} type="text" icon={<LogoutOutlined />}>退出登录</Button>
+              <Button 
+                className={styles.logoutBtn} 
+                type="text" 
+                icon={<LogoutOutlined />} 
+                onClick={async () => {
+                  try {
+                    await logout();
+                    message.success('退出登录成功');
+                    router.push('/login');
+                  } catch (error) {
+                    message.error('退出登录失败');
+                  }
+                }}
+              >
+                退出登录
+              </Button>
             </div>
           )}
         </div>

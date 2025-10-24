@@ -1,8 +1,9 @@
 /**
- * 设备管理 API
+ * 设备管理 API 服务
+ * 使用统一的API基础架构
  */
 
-import { apiClient } from './instance';
+import { BaseApiService, createApiService } from './base';
 import type {
   IEquipment,
   IEquipmentCalibration,
@@ -13,148 +14,182 @@ import type {
   IEquipmentScrapApply,
   IEquipmentAcceptance,
 } from '@/types/equipment';
-import type { IPaginationResponse, IPageQueryParams } from '@/types';
+import type { 
+  PaginationResponse, 
+  BaseQueryParams, 
+  ID, 
+  Result,
+  ApiErrorResponse 
+} from '@/types/core';
+import { apiClient } from './instance';
 
 /**
- * 设备管理 API 服务
+ * 设备查询参数
+ */
+export interface EquipmentQueryParams extends BaseQueryParams {
+  keyword?: string;
+  status?: string;
+  category?: string;
+  department?: string;
+}
+
+/**
+ * 设备API服务类
+ */
+class EquipmentApiService extends BaseApiService<IEquipment, Partial<IEquipment>, Partial<IEquipment> & { id: ID }, EquipmentQueryParams> {
+  constructor() {
+    super('/equipment');
+  }
+
+  /**
+   * 获取需要检校的设备
+   */
+  async getDueCalibrationList(): Promise<Result<IEquipment[], ApiErrorResponse>> {
+    return apiClient.get<IEquipment[]>(`${this.baseUrl}/calibration/due`);
+  }
+}
+
+/**
+ * 设备检校API服务
+ */
+class EquipmentCalibrationApiService extends BaseApiService<IEquipmentCalibration, Partial<IEquipmentCalibration>, Partial<IEquipmentCalibration> & { id: ID }, BaseQueryParams> {
+  constructor() {
+    super('/equipment/calibration');
+  }
+}
+
+/**
+ * 设备使用记录API服务
+ */
+class EquipmentUseRecordApiService extends BaseApiService<IEquipmentUseRecord, Partial<IEquipmentUseRecord>, Partial<IEquipmentUseRecord> & { id: ID }, BaseQueryParams> {
+  constructor() {
+    super('/equipment/use-record');
+  }
+
+  /**
+   * 完成使用记录
+   */
+  async complete(id: ID): Promise<Result<IEquipmentUseRecord, ApiErrorResponse>> {
+    return apiClient.post<IEquipmentUseRecord>(`${this.baseUrl}/${id}/complete`);
+  }
+}
+
+/**
+ * 设备维护API服务
+ */
+class EquipmentMaintenanceApiService {
+  private readonly baseUrl = '/equipment/maintenance';
+
+  /**
+   * 获取维护记录
+   */
+  async getRecords(params?: BaseQueryParams): Promise<Result<PaginationResponse<IEquipmentMaintenanceRecord>, ApiErrorResponse>> {
+    return apiClient.get<PaginationResponse<IEquipmentMaintenanceRecord>>(`${this.baseUrl}/records`, { params: params as Record<string, unknown> });
+  }
+
+  /**
+   * 创建维护记录
+   */
+  async createRecord(data: Partial<IEquipmentMaintenanceRecord>): Promise<Result<IEquipmentMaintenanceRecord, ApiErrorResponse>> {
+    return apiClient.post<IEquipmentMaintenanceRecord>(`${this.baseUrl}/records`, data);
+  }
+
+  /**
+   * 获取维护计划
+   */
+  async getPlans(params?: BaseQueryParams): Promise<Result<PaginationResponse<IEquipmentMaintenancePlan>, ApiErrorResponse>> {
+    return apiClient.get<PaginationResponse<IEquipmentMaintenancePlan>>(`${this.baseUrl}/plans`, { params: params as Record<string, unknown> });
+  }
+
+  /**
+   * 创建维护计划
+   */
+  async createPlan(data: Partial<IEquipmentMaintenancePlan>): Promise<Result<IEquipmentMaintenancePlan, ApiErrorResponse>> {
+    return apiClient.post<IEquipmentMaintenancePlan>(`${this.baseUrl}/plans`, data);
+  }
+
+  /**
+   * 执行维护计划
+   */
+  async executePlan(id: ID): Promise<Result<IEquipmentMaintenanceRecord, ApiErrorResponse>> {
+    return apiClient.post<IEquipmentMaintenanceRecord>(`${this.baseUrl}/plans/${id}/execute`);
+  }
+}
+
+/**
+ * 设备借用API服务
+ */
+class EquipmentBorrowApiService extends BaseApiService<IEquipmentBorrowApply, Partial<IEquipmentBorrowApply>, Partial<IEquipmentBorrowApply> & { id: ID }, BaseQueryParams> {
+  constructor() {
+    super('/equipment/borrow');
+  }
+
+  /**
+   * 审批借用申请
+   */
+  async approve(id: ID, approved: boolean, comment?: string): Promise<Result<IEquipmentBorrowApply, ApiErrorResponse>> {
+    return apiClient.post<IEquipmentBorrowApply>(`${this.baseUrl}/${id}/approve`, { approved, comment });
+  }
+
+  /**
+   * 归还设备
+   */
+  async return(id: ID): Promise<Result<IEquipmentBorrowApply, ApiErrorResponse>> {
+    return apiClient.post<IEquipmentBorrowApply>(`${this.baseUrl}/${id}/return`);
+  }
+}
+
+/**
+ * 设备报废API服务
+ */
+class EquipmentScrapApiService extends BaseApiService<IEquipmentScrapApply, Partial<IEquipmentScrapApply>, Partial<IEquipmentScrapApply> & { id: ID }, BaseQueryParams> {
+  constructor() {
+    super('/equipment/scrap');
+  }
+
+  /**
+   * 审批报废申请
+   */
+  async approve(id: ID, approved: boolean, comment?: string): Promise<Result<IEquipmentScrapApply, ApiErrorResponse>> {
+    return apiClient.post<IEquipmentScrapApply>(`${this.baseUrl}/${id}/approve`, { approved, comment });
+  }
+}
+
+/**
+ * 设备验收API服务
+ */
+class EquipmentAcceptanceApiService extends BaseApiService<IEquipmentAcceptance, Partial<IEquipmentAcceptance>, Partial<IEquipmentAcceptance> & { id: ID }, BaseQueryParams> {
+  constructor() {
+    super('/equipment/acceptance');
+  }
+}
+
+/**
+ * 导出统一的设备API服务
  */
 export const equipmentApi = {
-  /**
-   * 获取设备列表
-   */
-  getList: (params: IPageQueryParams) => {
-    return apiClient.get<IPaginationResponse<IEquipment>>('/equipment', params);
-  },
-
-  /**
-   * 获取设备详情
-   */
-  getById: (id: string) => {
-    return apiClient.get<IEquipment>(`/equipment/${id}`);
-  },
-
-  /**
-   * 创建设备
-   */
-  create: (data: Partial<IEquipment>) => {
-    return apiClient.post<IEquipment>('/equipment', data);
-  },
-
-  /**
-   * 更新设备信息
-   */
-  update: (id: string, data: Partial<IEquipment>) => {
-    return apiClient.put<IEquipment>(`/equipment/${id}`, data);
-  },
-
-  /**
-   * 删除设备
-   */
-  delete: (id: string) => {
-    return apiClient.delete<void>(`/equipment/${id}`);
-  },
-
-  // 设备检校相关
-  calibration: {
-    getList: (params: IPageQueryParams) => {
-      return apiClient.get<IPaginationResponse<IEquipmentCalibration>>('/equipment/calibration', params);
-    },
-    
-    create: (data: Partial<IEquipmentCalibration>) => {
-      return apiClient.post<IEquipmentCalibration>('/equipment/calibration', data);
-    },
-    
-    update: (id: string, data: Partial<IEquipmentCalibration>) => {
-      return apiClient.put<IEquipmentCalibration>(`/equipment/calibration/${id}`, data);
-    },
-    
-    // 获取需要检校的设备
-    getDueList: () => {
-      return apiClient.get<IEquipment[]>('/equipment/calibration/due');
-    },
-  },
-
-  // 设备使用记录
-  useRecord: {
-    getList: (params: IPageQueryParams) => {
-      return apiClient.get<IPaginationResponse<IEquipmentUseRecord>>('/equipment/use-record', params);
-    },
-    
-    create: (data: Partial<IEquipmentUseRecord>) => {
-      return apiClient.post<IEquipmentUseRecord>('/equipment/use-record', data);
-    },
-    
-    complete: (id: string) => {
-      return apiClient.post<IEquipmentUseRecord>(`/equipment/use-record/${id}/complete`);
-    },
-  },
-
-  // 设备维护记录
-  maintenance: {
-    getRecords: (params: IPageQueryParams) => {
-      return apiClient.get<IPaginationResponse<IEquipmentMaintenanceRecord>>('/equipment/maintenance/record', params);
-    },
-    
-    createRecord: (data: Partial<IEquipmentMaintenanceRecord>) => {
-      return apiClient.post<IEquipmentMaintenanceRecord>('/equipment/maintenance/record', data);
-    },
-    
-    getPlans: (params: IPageQueryParams) => {
-      return apiClient.get<IPaginationResponse<IEquipmentMaintenancePlan>>('/equipment/maintenance/plan', params);
-    },
-    
-    createPlan: (data: Partial<IEquipmentMaintenancePlan>) => {
-      return apiClient.post<IEquipmentMaintenancePlan>('/equipment/maintenance/plan', data);
-    },
-    
-    executePlan: (id: string) => {
-      return apiClient.post<IEquipmentMaintenancePlan>(`/equipment/maintenance/plan/${id}/execute`);
-    },
-  },
-
-  // 设备借用
-  borrow: {
-    getList: (params: IPageQueryParams) => {
-      return apiClient.get<IPaginationResponse<IEquipmentBorrowApply>>('/equipment/borrow', params);
-    },
-    
-    apply: (data: Partial<IEquipmentBorrowApply>) => {
-      return apiClient.post<IEquipmentBorrowApply>('/equipment/borrow', data);
-    },
-    
-    approve: (id: string, approved: boolean, comment?: string) => {
-      return apiClient.post<IEquipmentBorrowApply>(`/equipment/borrow/${id}/approve`, { approved, comment });
-    },
-    
-    return: (id: string) => {
-      return apiClient.post<IEquipmentBorrowApply>(`/equipment/borrow/${id}/return`);
-    },
-  },
-
-  // 设备报废
-  scrap: {
-    getList: (params: IPageQueryParams) => {
-      return apiClient.get<IPaginationResponse<IEquipmentScrapApply>>('/equipment/scrap', params);
-    },
-    
-    apply: (data: Partial<IEquipmentScrapApply>) => {
-      return apiClient.post<IEquipmentScrapApply>('/equipment/scrap', data);
-    },
-    
-    approve: (id: string, approved: boolean, comment?: string) => {
-      return apiClient.post<IEquipmentScrapApply>(`/equipment/scrap/${id}/approve`, { approved, comment });
-    },
-  },
-
-  // 设备验收
-  acceptance: {
-    getList: (params: IPageQueryParams) => {
-      return apiClient.get<IPaginationResponse<IEquipmentAcceptance>>('/equipment/acceptance', params);
-    },
-    
-    create: (data: Partial<IEquipmentAcceptance>) => {
-      return apiClient.post<IEquipmentAcceptance>('/equipment/acceptance', data);
-    },
-  },
+  // 主要设备管理
+  equipment: new EquipmentApiService(),
+  
+  // 设备检校
+  calibration: new EquipmentCalibrationApiService(),
+  
+  // 使用记录
+  useRecord: new EquipmentUseRecordApiService(),
+  
+  // 维护管理
+  maintenance: new EquipmentMaintenanceApiService(),
+  
+  // 借用管理
+  borrow: new EquipmentBorrowApiService(),
+  
+  // 报废管理
+  scrap: new EquipmentScrapApiService(),
+  
+  // 验收管理
+  acceptance: new EquipmentAcceptanceApiService(),
 };
+
+// 向后兼容的导出
+export default equipmentApi;
 

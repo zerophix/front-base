@@ -21,6 +21,7 @@ type StatisticsRow = {
 };
 
 export default function DataStatisticsAnalysisPage() {
+  const [form] = Form.useForm();
   const keyCounter = useRef(0);
 
   // 统计数据表格
@@ -40,7 +41,7 @@ export default function DataStatisticsAnalysisPage() {
 
   // 表单提交
   const { submitting, saving, handleSubmit, handleSave } = useFormSubmit({
-    form: null as any,
+    form,
     onSubmit: async (values) => {
       const data = {
         ...values,

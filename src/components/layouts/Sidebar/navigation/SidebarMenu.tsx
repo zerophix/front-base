@@ -8,8 +8,8 @@ import styles from './SidebarMenu.module.css';
 interface SidebarMenuProps {
   items: any[];
   selectedKey: string;
-  openKeys: string[];
-  onOpenChange: (keys: string[]) => void;
+  openKeys: readonly string[];
+  onOpenChange: (keys: readonly string[]) => void;
   collapsed: boolean;
   onItemClick: (key: string) => void;
 }
@@ -118,8 +118,8 @@ const SidebarMenuComponent: React.FC<SidebarMenuProps> = ({
       inlineCollapsed: collapsed,
       selectedKeys: [selectedKey],
       // 当折叠时，让 AntD 自行管理打开项，避免警告
-      openKeys: collapsed ? undefined : openKeys,
-      onOpenChange: collapsed ? undefined : handleOpenChange,
+      openKeys: collapsed ? undefined : [...openKeys] as string[],
+      onOpenChange: collapsed ? undefined : (keys: string[]) => handleOpenChange(keys),
       items: items as any,
       motion: { motionAppear: false, motionEnter: false, motionLeave: false },
       onClick: handleMenuClick,
@@ -137,7 +137,7 @@ const SidebarMenuComponent: React.FC<SidebarMenuProps> = ({
 };
 
 // 浅比较数组的辅助函数
-const shallowEqual = (arr1: string[], arr2: string[]): boolean => {
+const shallowEqual = (arr1: readonly string[], arr2: readonly string[]): boolean => {
   if (arr1.length !== arr2.length) return false;
   return arr1.every((item, index) => item === arr2[index]);
 };

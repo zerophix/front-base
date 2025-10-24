@@ -5,55 +5,27 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import type { UIStore, ThemeType } from '@/types/core';
+import { Theme } from '@/types/core';
+import { createSimpleSafeStorage } from '../core/base';
 
-// 兼容 SSR 的安全存储适配：在服务端使用 noop storage，避免访问 localStorage 导致崩溃
-const createNoopStorage = (): Storage => ({
-  getItem: () => null,
-  setItem: () => {},
-  removeItem: () => {},
-  clear: () => {},
-  key: () => null,
-  length: 0,
-});
-const safeStorage = () => (typeof window !== 'undefined' ? localStorage : createNoopStorage());
-
-export interface IUIState {
-  // 主题
-  theme: 'light' | 'dark';
-  setTheme: (theme: 'light' | 'dark') => void;
-  toggleTheme: () => void;
-  
-  // 全局loading
-  loading: boolean;
-  loadingCount: number;
-  showLoading: () => void;
-  hideLoading: () => void;
-
-  // 侧边栏折叠状态
-  sidebarCollapsed: boolean;
-  setSidebarCollapsed: (collapsed: boolean) => void;
-  toggleSidebar: () => void;
-
-  // 侧边栏展开的分组 keys（保持静态不跳动）
-  sidebarOpenKeys: string[];
-  setSidebarOpenKeys: (keys: string[]) => void;
-}
-
-export const useUIStore = create<IUIState>()(
+export const useUIStore = create<UIStore>()(
   persist(
     (set) => ({
-      // 初始值
-      theme: 'light',
+      // 初始状态
+      theme: Theme.LIGHT,
       loading: false,
       loadingCount: 0,
       sidebarCollapsed: true, // 默认为折叠状态，只显示一级目录
       sidebarOpenKeys: [],
       
-      // 主题操作
-      setTheme: (theme) => set({ theme }),
-      toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
+      // Actions
+      setTheme: (theme: ThemeType) => set({ theme }),
+      toggleTheme: () => set((state) => ({ 
+        theme: state.theme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT 
+      })),
       
-      // Loading操作
+      // Loading 管理
       showLoading: () => set((state) => ({
         loadingCount: state.loadingCount + 1,
         loading: true,
@@ -66,19 +38,18 @@ export const useUIStore = create<IUIState>()(
         };
       }),
 
-      // 侧边栏折叠
+      // 侧边栏管理
       setSidebarCollapsed: (sidebarCollapsed: boolean) => set({ sidebarCollapsed }),
       toggleSidebar: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
 
-      setSidebarOpenKeys: (keys: string[]) => set({ sidebarOpenKeys: keys }),
+      setSidebarOpenKeys: (keys: readonly string[]) => set({ sidebarOpenKeys: keys }),
     }),
     {
       name: 'ui-storage',
-      storage: createJSONStorage(safeStorage),
+      storage: createJSONStorage(createSimpleSafeStorage),
       partialize: (state) => ({
           theme: state.theme,
-          // 不持久化 sidebarCollapsed，始终使用默认的折叠状态
-          // sidebarCollapsed: state.sidebarCollapsed,
+          sidebarCollapsed: state.sidebarCollapsed,
           sidebarOpenKeys: state.sidebarOpenKeys,
         }),
     }

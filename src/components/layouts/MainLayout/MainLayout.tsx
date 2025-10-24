@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { Header } from '../Header/Header';
-import { Sidebar } from '../Sidebar/core/Sidebar';
+import { Header } from '@/components/layouts/Header/Header';
+import { Sidebar } from '@/components/layouts/Sidebar/core/Sidebar';
 import styles from './MainLayout.module.css';
 import { useUIStore } from '@/store';
 import { SIZES } from '@/utils/constants/dimensions';

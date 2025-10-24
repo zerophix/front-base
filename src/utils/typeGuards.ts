@@ -3,7 +3,7 @@
  * 提供类型检查和验证功能
  */
 
-import { createError, globalErrorHandler } from './errorHandler';
+import { createError, globalErrorHandler } from '@/utils/errorHandler';
 
 /**
  * 基础类型检查

@@ -7,8 +7,8 @@ import { useRouteMeta, usePageConfig } from '@/hooks';
 import type { FieldConfig } from '@/components/templates/StandardFormPage';
 
 export default function DetectionObjectsPage() {
-  const routeMeta = useRouteMeta();
-  usePageConfig(routeMeta);
+  // 从路由配置获取页面元信息并设置到全局store
+  useRouteMeta();
   const fields: FieldConfig[] = [
     { name: 'objectCode', label: '对象编号', type: 'text', required: true, span: 12 },
     { name: 'objectName', label: '对象名称', type: 'text', required: true, span: 12 },

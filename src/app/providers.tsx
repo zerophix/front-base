@@ -1,16 +1,22 @@
-'use client';
+"use client";
 
 import React, { useEffect } from 'react';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, App } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
-import { initCsrfProtection } from '@/utils';
-
-// 初始化增强的CSRF保护
-if (typeof window !== 'undefined') {
-  initCsrfProtection();
-}
 
 export function AntdProvider({ children }: { children: React.ReactNode }) {
+  // 暂时禁用 CSRF 初始化，避免 SSR 兼容性问题
+  useEffect(() => {
+    // TODO: 重新启用 CSRF 保护
+    /*
+    if (typeof window !== 'undefined') {
+      (async () => {
+        const { initCsrfProtection } = await import('@/utils/security');
+        initCsrfProtection();
+      })();
+    }
+    */
+  }, []);
 
   return (
     <ConfigProvider
@@ -58,7 +64,9 @@ export function AntdProvider({ children }: { children: React.ReactNode }) {
         },
       }}
     >
-      {children}
+      <App>
+        {children}
+      </App>
     </ConfigProvider>
   );
 }

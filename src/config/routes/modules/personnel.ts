@@ -1,5 +1,5 @@
 import type { RouteConfig } from '@/config/routes';
-import { createModuleRoute, createChildRoutes } from '../utils';
+import { createModuleRoute, createChildRoutes } from '@/config/routes/utils';
 
 const moduleRoute = createModuleRoute('personnel', 'UserOutlined');
 

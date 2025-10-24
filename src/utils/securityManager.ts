@@ -3,11 +3,11 @@
  * 提供安全初始化、监控、日志记录等功能的统一接口
  */
 
-import { authManager, isAuthenticated } from './auth';
-import { initCsrfProtection, validateCsrfToken } from './security';
-import { logger, securityLogger, auditLogger, SecurityEventType } from './logger';
-import { securityMonitor } from './monitoring';
-import { validateEnvironmentSecurity } from './encryption';
+import { authManager, isAuthenticated } from '@/utils/auth';
+import { initCsrfProtection, validateCsrfToken } from '@/utils/security';
+import { logger, securityLogger, auditLogger, SecurityEventType } from '@/utils/logger';
+import { securityMonitor } from '@/utils/monitoring';
+import { validateEnvironmentSecurity } from '@/utils/encryption';
 
 export interface SecurityManagerConfig {
   enableLogging?: boolean;

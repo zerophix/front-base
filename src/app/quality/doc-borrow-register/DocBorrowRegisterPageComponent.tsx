@@ -29,6 +29,7 @@ export default function DocBorrowRegisterPage() {
 
   // 从路由派生页面元信息并写入全局（单一数据源）
   useRouteMeta();
+  const [form] = Form.useForm();
 
   // 借阅记录表格
   const { dataSource, setDataSource, createDefaultRow } = useTableData<BorrowRow>({
@@ -51,7 +52,7 @@ export default function DocBorrowRegisterPage() {
 
   // 表单提交
   const { submitting, saving, handleSubmit, handleSave } = useFormSubmit({
-    form: null as any,
+    form,
     onSubmit: async (values) => {
       const data = {
         ...values,

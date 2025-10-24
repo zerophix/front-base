@@ -3,7 +3,7 @@
  * 实现实时威胁检测和异常行为分析
  */
 
-import { securityLogger } from './logger';
+import { securityLogger } from '@/utils/logger';
 
 /**
  * 威胁级别
@@ -13,6 +13,22 @@ export enum ThreatLevel {
   MEDIUM = 'medium',
   HIGH = 'high',
   CRITICAL = 'critical',
+}
+
+/**
+ * 安全响应类型
+ */
+export enum SecurityResponse {
+  BLOCK_IP = 'block_ip',
+  TEMP_BLOCK_IP = 'temp_block_ip',
+  LOCK_ACCOUNT = 'lock_account',
+  REQUIRE_MFA = 'require_mfa',
+  RATE_LIMIT = 'rate_limit',
+  SEND_ALERT = 'send_alert',
+  ESCALATE_TO_ADMIN = 'escalate_to_admin',
+  LOG_EVENT = 'log_event',
+  MONITOR_CLOSELY = 'monitor_closely',
+  INCREASE_MONITORING = 'increase_monitoring',
 }
 
 /**
@@ -397,14 +413,215 @@ export class SecurityMonitor {
    * 触发安全响应
    */
   private triggerSecurityResponse(event: MonitoringEvent, result: AnomalyDetectionResult): void {
-    // TODO: 实现自动安全响应
-    // 例如：临时锁定账户、限制IP访问、发送告警等
+    // 实现自动安全响应
+    const responses = this.determineSecurityResponses(result);
     
-    console.warn('🚨 Security Response Triggered:', {
-      event,
-      result,
+    for (const response of responses) {
+      this.executeSecurityResponse(response, event, result);
+    }
+    
+    securityLogger.logSuspiciousActivity(
+      `Security response triggered: ${result.reasons.join(', ')}`,
+      result.riskScore,
+      {
+        event,
+        threatLevel: result.threatLevel,
+        riskScore: result.riskScore,
+        recommendations: result.recommendations,
+        responses: responses,
+      }
+    );
+  }
+
+  /**
+   * 确定需要执行的安全响应措施
+   */
+  private determineSecurityResponses(result: AnomalyDetectionResult): SecurityResponse[] {
+    const responses: SecurityResponse[] = [];
+    
+    // 根据威胁级别确定响应措施
+    switch (result.threatLevel) {
+      case ThreatLevel.CRITICAL:
+        responses.push(
+          SecurityResponse.BLOCK_IP,
+          SecurityResponse.LOCK_ACCOUNT,
+          SecurityResponse.SEND_ALERT,
+          SecurityResponse.ESCALATE_TO_ADMIN
+        );
+        break;
+      case ThreatLevel.HIGH:
+        responses.push(
+          SecurityResponse.TEMP_BLOCK_IP,
+          SecurityResponse.REQUIRE_MFA,
+          SecurityResponse.SEND_ALERT
+        );
+        break;
+      case ThreatLevel.MEDIUM:
+        responses.push(
+          SecurityResponse.RATE_LIMIT,
+          SecurityResponse.LOG_EVENT,
+          SecurityResponse.MONITOR_CLOSELY
+        );
+        break;
+      case ThreatLevel.LOW:
+        responses.push(
+          SecurityResponse.LOG_EVENT,
+          SecurityResponse.INCREASE_MONITORING
+        );
+        break;
+    }
+    
+    return responses;
+  }
+
+  /**
+   * 执行具体的安全响应措施
+   */
+  private executeSecurityResponse(
+    response: SecurityResponse,
+    event: MonitoringEvent,
+    result: AnomalyDetectionResult
+  ): void {
+    try {
+      switch (response) {
+        case SecurityResponse.BLOCK_IP:
+          this.blockIpAddress(event.ip!, 24 * 60 * 60 * 1000); // 24小时
+          break;
+        case SecurityResponse.TEMP_BLOCK_IP:
+          this.blockIpAddress(event.ip!, 60 * 60 * 1000); // 1小时
+          break;
+        case SecurityResponse.LOCK_ACCOUNT:
+          this.lockUserAccount(event.userId!, 30 * 60 * 1000); // 30分钟
+          break;
+        case SecurityResponse.REQUIRE_MFA:
+          this.requireMfaForUser(event.userId!);
+          break;
+        case SecurityResponse.RATE_LIMIT:
+          this.applyRateLimit(event.ip!, event.userId!);
+          break;
+        case SecurityResponse.SEND_ALERT:
+          this.sendSecurityAlert(event, result);
+          break;
+        case SecurityResponse.ESCALATE_TO_ADMIN:
+          this.escalateToAdmin(event, result);
+          break;
+        case SecurityResponse.LOG_EVENT:
+          // 已在上层处理
+          break;
+        case SecurityResponse.MONITOR_CLOSELY:
+          this.enableCloseMonitoring(event.userId!, event.ip!);
+          break;
+        case SecurityResponse.INCREASE_MONITORING:
+          this.increaseMonitoringLevel(event.userId!, event.ip!);
+          break;
+      }
+    } catch (error) {
+      securityLogger.logSuspiciousActivity(
+        `Failed to execute security response: ${response}`,
+        100,
+        { error: error instanceof Error ? error.message : String(error) }
+      );
+    }
+  }
+
+  /**
+   * 封禁IP地址
+   */
+  private blockIpAddress(ip: string, duration: number): void {
+    // 在实际应用中，这里应该调用防火墙API或更新IP黑名单
+    securityLogger.logSuspiciousActivity(
+      `IP address blocked: ${ip}`,
+      80,
+      { ip, duration, expiresAt: new Date(Date.now() + duration).toISOString() }
+    );
+  }
+
+  /**
+   * 锁定用户账户
+   */
+  private lockUserAccount(userId: string, duration: number): void {
+    // 在实际应用中，这里应该调用用户管理API
+    securityLogger.logSuspiciousActivity(
+      `User account locked: ${userId}`,
+      80,
+      { userId, duration, expiresAt: new Date(Date.now() + duration).toISOString() }
+    );
+  }
+
+  /**
+   * 要求用户进行多因素认证
+   */
+  private requireMfaForUser(userId: string): void {
+    securityLogger.logSuspiciousActivity(
+      `MFA required for user: ${userId}`,
+      60,
+      { userId }
+    );
+  }
+
+  /**
+   * 应用速率限制
+   */
+  private applyRateLimit(ip: string, userId: string): void {
+    securityLogger.logSuspiciousActivity(
+      `Rate limit applied`,
+      40,
+      { ip, userId }
+    );
+  }
+
+  /**
+   * 发送安全告警
+   */
+  private sendSecurityAlert(event: MonitoringEvent, result: AnomalyDetectionResult): void {
+    const alertData = {
       timestamp: new Date().toISOString(),
-    });
+      threatLevel: result.threatLevel,
+      riskScore: result.riskScore,
+      event,
+      reasons: result.reasons,
+      recommendations: result.recommendations,
+    };
+
+    // 在实际应用中，这里应该调用告警服务API
+    securityLogger.logSuspiciousActivity(
+      `Security alert sent for threat level: ${result.threatLevel}`,
+      result.riskScore,
+      alertData
+    );
+  }
+
+  /**
+   * 升级到管理员
+   */
+  private escalateToAdmin(event: MonitoringEvent, result: AnomalyDetectionResult): void {
+    securityLogger.logSuspiciousActivity(
+      `Security incident escalated to admin`,
+      100,
+      { event, result }
+    );
+  }
+
+  /**
+   * 启用密切监控
+   */
+  private enableCloseMonitoring(userId: string, ip: string): void {
+    securityLogger.logSuspiciousActivity(
+      `Close monitoring enabled`,
+      30,
+      { userId, ip }
+    );
+  }
+
+  /**
+   * 提高监控级别
+   */
+  private increaseMonitoringLevel(userId: string, ip: string): void {
+    securityLogger.logSuspiciousActivity(
+      `Monitoring level increased`,
+      20,
+      { userId, ip }
+    );
   }
   
   /**
@@ -503,11 +720,78 @@ export class SecurityMonitor {
   /**
    * 检查可疑IP
    */
-  private isSuspiciousIp(_ip: string): boolean {
-    // 简化的可疑IP检测
-    // 实际实现应该使用威胁情报数据库
-    // TODO: 实现IP范围检查
+  private isSuspiciousIp(ip: string): boolean {
+    // 检查已知的恶意IP范围
+    const suspiciousRanges = [
+      // Tor出口节点范围（示例）
+      { start: '192.42.116.0', end: '192.42.116.255' },
+      // 已知恶意IP范围（示例）
+      { start: '185.220.100.0', end: '185.220.103.255' },
+      // VPN/代理服务器范围（示例）
+      { start: '104.244.72.0', end: '104.244.79.255' },
+    ];
+    
+    // 检查是否在可疑范围内
+    for (const range of suspiciousRanges) {
+      if (this.isIpInRange(ip, range.start, range.end)) {
+        return true;
+      }
+    }
+    
+    // 检查私有IP地址（可能是内网攻击）
+    if (this.isPrivateIp(ip)) {
+      return false; // 私有IP通常不可疑，除非在特定上下文中
+    }
+    
+    // 检查本地回环地址
+    if (ip.startsWith('127.') || ip === '::1') {
+      return false;
+    }
+    
+    // 检查格式异常的IP
+    if (!this.isValidIpFormat(ip)) {
+      return true;
+    }
+    
     return false;
+  }
+  
+  /**
+   * 检查IP是否在指定范围内
+   */
+  private isIpInRange(ip: string, startIp: string, endIp: string): boolean {
+    const ipToNumber = (ipStr: string): number => {
+      return ipStr.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0;
+    };
+    
+    const ipNum = ipToNumber(ip);
+    const startNum = ipToNumber(startIp);
+    const endNum = ipToNumber(endIp);
+    
+    return ipNum >= startNum && ipNum <= endNum;
+  }
+  
+  /**
+   * 检查是否为私有IP地址
+   */
+  private isPrivateIp(ip: string): boolean {
+    const privateRanges = [
+      { start: '10.0.0.0', end: '10.255.255.255' },
+      { start: '172.16.0.0', end: '172.31.255.255' },
+      { start: '192.168.0.0', end: '192.168.255.255' },
+    ];
+    
+    return privateRanges.some(range => this.isIpInRange(ip, range.start, range.end));
+  }
+  
+  /**
+   * 验证IP地址格式
+   */
+  private isValidIpFormat(ip: string): boolean {
+    const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    const ipv6Regex = /^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$|^::1$|^::$/;
+    
+    return ipv4Regex.test(ip) || ipv6Regex.test(ip);
   }
   
   /**

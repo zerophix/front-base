@@ -7,7 +7,7 @@
 
 import { usePageStore } from '@/store/modules/pageStore';
 import { useEffect } from 'react';
-import type { RouteMeta } from './useRouteMeta';
+import type { RouteMeta } from '@/hooks/useRouteMeta';
 
 export interface PageConfig {
   title: string;

@@ -2,28 +2,27 @@
 
 import React from 'react';
 import { useServerInsertedHTML } from 'next/navigation';
-import { createCache, extractStyle, StyleProvider } from '@ant-design/cssinjs';
-import type Entity from '@ant-design/cssinjs/es/Cache';
+import { StyleProvider, createCache, extractStyle } from '@ant-design/cssinjs';
 
 /**
  * Ant Design 样式注册器
- * 用于在服务端渲染时提取样式并注入到 HTML，防止 FOUC (Flash of Unstyled Content)
+ * 使用 Next.js 的 useServerInsertedHTML 来处理 SSR 样式注入，彻底避免 FOUC 问题
+ * 确保样式在服务端渲染时就被正确注入到 HTML 中
  */
-export default function AntdRegistry({ children }: { children: React.ReactNode }) {
-  const cache = React.useMemo<Entity>(() => createCache(), []);
+interface AntdRegistryProps {
+  children: React.ReactNode;
+}
 
+const AntdRegistry: React.FC<AntdRegistryProps> = ({ children }) => {
+  const cache = createCache();
+
+  // 使用 Next.js 的 useServerInsertedHTML 确保样式在 SSR 时正确注入
   useServerInsertedHTML(() => {
-    const styleText = extractStyle(cache, true);
-    
-    // 只在有样式内容时插入
-    if (!styleText) {
-      return null;
-    }
-
+    const styles = extractStyle(cache, true);
     return (
-      <style
-        id="antd-css"
-        dangerouslySetInnerHTML={{ __html: styleText }}
+      <style 
+        id="antd-css-in-js" 
+        dangerouslySetInnerHTML={{ __html: styles }} 
       />
     );
   });
@@ -33,5 +32,7 @@ export default function AntdRegistry({ children }: { children: React.ReactNode }
       {children}
     </StyleProvider>
   );
-}
+};
+
+export default AntdRegistry;
 

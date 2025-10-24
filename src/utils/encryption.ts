@@ -3,7 +3,16 @@
  * 提供敏感数据的加密和解密功能
  */
 
-import crypto from 'crypto';
+const IS_BROWSER = typeof window !== 'undefined';
+
+// 动态导入 crypto 模块，避免在客户端环境加载
+const getCrypto = async () => {
+  if (IS_BROWSER) {
+    throw new Error('Crypto operations are not available in browser environment');
+  }
+  const crypto = await import('crypto');
+  return crypto.default || crypto;
+};
 
 /**
  * 加密配置
@@ -40,7 +49,19 @@ class EnvironmentManager {
   private encryptionKey: Buffer | null = null;
   
   private constructor() {
-    this.initializeEncryptionKey();
+    // 延迟初始化，在需要时才初始化密钥
+    this.encryptionKey = null;
+  }
+
+  private async ensureInitialized(): Promise<void> {
+    if (this.encryptionKey === null && !IS_BROWSER) {
+      try {
+        await this.initializeEncryptionKey();
+      } catch (error) {
+        console.error('Failed to initialize encryption key:', error);
+        throw error;
+      }
+    }
   }
   
   public static getInstance(): EnvironmentManager {
@@ -53,7 +74,12 @@ class EnvironmentManager {
   /**
    * 初始化加密密钥
    */
-  private initializeEncryptionKey(): void {
+  private async initializeEncryptionKey(): Promise<void> {
+    if (IS_BROWSER) {
+      // 浏览器环境不初始化加密密钥，避免使用Node-only API
+      this.encryptionKey = null;
+      return;
+    }
     const keyString = process.env.ENCRYPTION_KEY;
     
     if (!keyString) {
@@ -62,7 +88,14 @@ class EnvironmentManager {
       }
       // 开发环境使用默认密钥（不安全，仅用于开发）
       console.warn('⚠️  Using default encryption key in development mode');
-      this.encryptionKey = crypto.scryptSync('default-dev-key', 'salt', 32);
+      const crypto = await getCrypto();
+      // 使用异步版本的scrypt
+      this.encryptionKey = await new Promise<Buffer>((resolve, reject) => {
+        crypto.scrypt('default-dev-key', 'salt', 32, (err: Error | null, derivedKey: Buffer) => {
+          if (err) reject(err);
+          else resolve(derivedKey);
+        });
+      });
       return;
     }
     
@@ -80,17 +113,22 @@ class EnvironmentManager {
   /**
    * 获取加密密钥
    */
-  public getEncryptionKey(): Buffer {
-    if (!this.encryptionKey) {
-      throw new Error('Encryption key not initialized');
+  public async getEncryptionKey(): Promise<Buffer> {
+    if (IS_BROWSER) {
+      throw new Error('Encryption key is server-only; avoid using encryption in browser');
     }
-    return this.encryptionKey;
+    await this.ensureInitialized();
+    return this.encryptionKey!;
   }
   
   /**
    * 生成新的加密密钥
    */
-  public static generateEncryptionKey(): string {
+  public static async generateEncryptionKey(): Promise<string> {
+    if ( IS_BROWSER ) {
+      throw new Error('generateEncryptionKey is server-only');
+    }
+    const crypto = await getCrypto();
     return crypto.randomBytes(32).toString('hex');
   }
   
@@ -146,12 +184,13 @@ export class EncryptionUtils {
   /**
    * 加密数据
    */
-  public static encrypt(
+  public static async encrypt(
     data: string,
     config: Partial<EncryptionConfig> = {}
-  ): EncryptionResult {
+  ): Promise<EncryptionResult> {
     const finalConfig = { ...DEFAULT_CONFIG, ...config };
-    const key = this.envManager.getEncryptionKey();
+    const key = await this.envManager.getEncryptionKey();
+    const crypto = await getCrypto();
     const iv = crypto.randomBytes(finalConfig.ivLength);
     
     const cipher = crypto.createCipheriv(finalConfig.algorithm, key, iv);
@@ -175,12 +214,13 @@ export class EncryptionUtils {
   /**
    * 解密数据
    */
-  public static decrypt(
+  public static async decrypt(
     encryptionResult: EncryptionResult,
     config: Partial<EncryptionConfig> = {}
-  ): string {
+  ): Promise<string> {
     const finalConfig = { ...DEFAULT_CONFIG, ...config };
-    const key = this.envManager.getEncryptionKey();
+    const key = await this.envManager.getEncryptionKey();
+    const crypto = await getCrypto();
     const iv = Buffer.from(encryptionResult.iv, 'hex');
     
     const decipher = crypto.createDecipheriv(finalConfig.algorithm, key, iv);
@@ -199,18 +239,18 @@ export class EncryptionUtils {
   /**
    * 加密敏感的环境变量值
    */
-  public static encryptEnvValue(value: string): string {
-    const result = this.encrypt(value);
+  public static async encryptEnvValue(value: string): Promise<string> {
+    const result = await this.encrypt(value);
     return JSON.stringify(result);
   }
   
   /**
    * 解密敏感的环境变量值
    */
-  public static decryptEnvValue(encryptedValue: string): string {
+  public static async decryptEnvValue(encryptedValue: string): Promise<string> {
     try {
       const result: EncryptionResult = JSON.parse(encryptedValue);
-      return this.decrypt(result);
+      return await this.decrypt(result);
     } catch {
       throw new Error('Invalid encrypted environment value format');
     }
@@ -219,7 +259,8 @@ export class EncryptionUtils {
   /**
    * 生成安全的随机密钥
    */
-  public static generateSecureKey(length: number = 32): string {
+  public static async generateSecureKey(length: number = 32): Promise<string> {
+    const crypto = await getCrypto();
     return crypto.randomBytes(length).toString('hex');
   }
   
@@ -227,6 +268,7 @@ export class EncryptionUtils {
    * 哈希密码（用于存储）
    */
   public static async hashPassword(password: string): Promise<string> {
+    const crypto = await getCrypto();
     const salt = crypto.randomBytes(16).toString('hex');
     const hash = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
     return `${salt}:${hash}`;
@@ -236,6 +278,7 @@ export class EncryptionUtils {
    * 验证密码
    */
   public static async verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
+    const crypto = await getCrypto();
     const [salt, hash] = hashedPassword.split(':');
     const verifyHash = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
     return hash === verifyHash;
@@ -244,7 +287,8 @@ export class EncryptionUtils {
   /**
    * 生成安全的随机令牌
    */
-  public static generateSecureToken(length: number = 32): string {
+  public static async generateSecureToken(length: number = 32): Promise<string> {
+    const crypto = await getCrypto();
     return crypto.randomBytes(length).toString('base64url');
   }
 }
@@ -258,7 +302,7 @@ export class SecureEnvLoader {
   /**
    * 安全地获取环境变量
    */
-  public static get(key: string, defaultValue?: string): string {
+  public static async get(key: string, defaultValue?: string): Promise<string> {
     // 从缓存获取
     if (this.cache.has(key)) {
       return this.cache.get(key)!;
@@ -276,7 +320,7 @@ export class SecureEnvLoader {
     // 检查是否是加密值
     if (value.startsWith('{') && value.includes('encrypted')) {
       try {
-        const decrypted = EncryptionUtils.decryptEnvValue(value);
+        const decrypted = await EncryptionUtils.decryptEnvValue(value);
         this.cache.set(key, decrypted);
         return decrypted;
       } catch {
@@ -291,8 +335,8 @@ export class SecureEnvLoader {
   /**
    * 获取数字类型的环境变量
    */
-  public static getNumber(key: string, defaultValue?: number): number {
-    const value = this.get(key, defaultValue?.toString());
+  public static async getNumber(key: string, defaultValue?: number): Promise<number> {
+    const value = await this.get(key, defaultValue?.toString());
     const parsed = parseInt(value, 10);
     
     if (isNaN(parsed)) {
@@ -305,8 +349,8 @@ export class SecureEnvLoader {
   /**
    * 获取布尔类型的环境变量
    */
-  public static getBoolean(key: string, defaultValue?: boolean): boolean {
-    const value = this.get(key, defaultValue?.toString());
+  public static async getBoolean(key: string, defaultValue?: boolean): Promise<boolean> {
+    const value = await this.get(key, defaultValue?.toString());
     return value.toLowerCase() === 'true';
   }
   
@@ -320,12 +364,12 @@ export class SecureEnvLoader {
   /**
    * 验证所有必需的环境变量
    */
-  public static validateRequired(requiredVars: string[]): void {
+  public static async validateRequired(requiredVars: string[]): Promise<void> {
     const missing: string[] = [];
     
     for (const varName of requiredVars) {
       try {
-        this.get(varName);
+        await this.get(varName);
       } catch {
         missing.push(varName);
       }
@@ -340,10 +384,15 @@ export class SecureEnvLoader {
 /**
  * 导出环境管理器实例
  */
-export const envManager = EnvironmentManager.getInstance();
+export const envManager = typeof window === 'undefined' ? EnvironmentManager.getInstance() : (null as any);
 
 /**
  * 导出便捷函数
  */
-export const generateEncryptionKey = EnvironmentManager.generateEncryptionKey;
-export const validateEnvironmentSecurity = () => envManager.validateEnvironmentSecurity();
+export const generateEncryptionKey = () => EnvironmentManager.generateEncryptionKey();
+export const validateEnvironmentSecurity = () => {
+  if (typeof window !== 'undefined') {
+    return { valid: true, issues: [] };
+  }
+  return EnvironmentManager.getInstance().validateEnvironmentSecurity();
+};

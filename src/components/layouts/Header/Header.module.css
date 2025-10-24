@@ -117,9 +117,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
-  font-size: 14px;
+  background: var(--gradient-avatar);
+  color: var(--color-bg);
+  font-size: var(--font-size-sm);
   font-weight: 600;
 }
 
@@ -179,9 +179,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
-  font-size: 18px;
+  background: var(--gradient-avatar);
+  color: var(--color-bg);
+  font-size: var(--font-size-lg);
   font-weight: 600;
 }
 

@@ -23,12 +23,12 @@ type StandardRow = {
 };
 
 export default function TechnicalStandardValidityReportPage() {
-  const keyCounter = useRef(0);
-
+  const [form] = Form.useForm();
+  
   // 标准清单表格
   const { dataSource, setDataSource, createDefaultRow } = useTableData<StandardRow>({
     createDefaultRow: () => ({
-      key: `item_${++keyCounter.current}`,
+      key: Date.now().toString(),
       standardCode: '',
       standardName: '',
       version: '',
@@ -44,7 +44,7 @@ export default function TechnicalStandardValidityReportPage() {
 
   // 表单提交
   const { submitting, saving, handleSubmit, handleSave } = useFormSubmit({
-    form: null as any,
+    form,
     onSubmit: async (values) => {
       // TODO: 调用质量管理API：技术标准有效性确认
       // const data = { ...values, standards: dataSource };

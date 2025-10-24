@@ -4,7 +4,7 @@
  */
 
 import type { ReactNode } from 'react';
-import type { ModuleType, RoutePath } from './routes';
+import type { ModuleType, RoutePath } from '@/types/routes';
 
 /**
  * 侧边栏状态类型

@@ -3,7 +3,7 @@
  * 集中管理所有安全相关的配置
  */
 
-import { SecureEnvLoader } from '../utils/encryption';
+import { SecureEnvLoader } from '@/utils/encryption';
 
 /**
  * JWT配置
@@ -167,7 +167,12 @@ export const httpsConfig = {
 export const corsConfig = {
   origin: process.env.NODE_ENV === 'production' 
     ? [SecureEnvLoader.get('PRODUCTION_DOMAIN', 'https://front-base.vercel.app')]
-    : ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    : [
+        SecureEnvLoader.get('NEXT_PUBLIC_DEV_DOMAIN', 'http://localhost:3001'),
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+        'http://127.0.0.1:3001'
+      ],
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],

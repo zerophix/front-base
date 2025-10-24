@@ -5,7 +5,7 @@
 
 import { message } from 'antd';
 import { useUIStore, useUserStore } from '@/store';
-import type { IRequestConfig, IApiResponse, ApiError } from '@/types/api';
+import type { RequestConfig, ApiResponse, ApiErrorResponse } from '@/types/core/api';
 import { getCsrfToken } from '@/utils';
 import { getValidAccessToken } from '@/utils/auth';
 import { globalErrorHandler, createError } from '@/utils/errorHandler';
@@ -13,35 +13,41 @@ import { globalErrorHandler, createError } from '@/utils/errorHandler';
 /**
  * 请求拦截器 - 添加token（使用新的认证系统）
  */
-export const tokenRequestInterceptor = async (config: IRequestConfig): Promise<IRequestConfig> => {
+export const tokenRequestInterceptor = async (config: RequestConfig): Promise<RequestConfig> => {
   const token = await getValidAccessToken();
   if (token) {
-    config.headers = {
-      ...config.headers,
-      Authorization: `Bearer ${token}`,
+    return {
+      ...config,
+      headers: {
+        ...config.headers,
+        'Authorization': `Bearer ${token}`,
+      },
     };
   }
   return config;
 };
 
 /**
- * 请求拦截器 - 注入CSRF Token
+ * 请求拦截器 - 添加CSRF token
  */
-export const csrfRequestInterceptor = async (config: IRequestConfig): Promise<IRequestConfig> => {
+export const csrfRequestInterceptor = async (config: RequestConfig): Promise<RequestConfig> => {
   const csrf = typeof window !== 'undefined' ? getCsrfToken() : null;
   if (csrf) {
-    config.headers = {
-      ...config.headers,
-      'X-CSRF-Token': csrf,
+    return {
+      ...config,
+      headers: {
+        ...config.headers,
+        'X-CSRF-Token': csrf,
+      },
     };
   }
   return config;
 };
 
 /**
- * 请求拦截器 - 显示loading
+ * 通用请求拦截器
  */
-export const requestInterceptor = async (config: IRequestConfig): Promise<IRequestConfig> => {
+export const requestInterceptor = async (config: RequestConfig): Promise<RequestConfig> => {
   useUIStore.getState().showLoading();
   return config;
 };
@@ -49,15 +55,15 @@ export const requestInterceptor = async (config: IRequestConfig): Promise<IReque
 /**
  * 请求错误拦截器
  */
-export const requestErrorInterceptor = async (config: IRequestConfig): Promise<IRequestConfig> => {
+export const requestErrorInterceptor = async (config: RequestConfig): Promise<RequestConfig> => {
   useUIStore.getState().hideLoading();
   return config;
 };
 
 /**
- * 响应拦截器 - 日志
+ * 响应日志拦截器
  */
-export const logResponseInterceptor = async <T>(response: IApiResponse<T>): Promise<IApiResponse<T>> => {
+export const logResponseInterceptor = async <T>(response: ApiResponse<T>): Promise<ApiResponse<T>> => {
   if (process.env.NODE_ENV === 'development') {
     console.log('[API Response]:', response);
   }
@@ -65,78 +71,80 @@ export const logResponseInterceptor = async <T>(response: IApiResponse<T>): Prom
 };
 
 /**
- * 响应拦截器 - 隐藏loading
+ * 通用响应拦截器
  */
-export const responseInterceptor = async <T>(response: IApiResponse<T>): Promise<IApiResponse<T>> => {
+export const responseInterceptor = async <T>(response: ApiResponse<T>): Promise<ApiResponse<T>> => {
   useUIStore.getState().hideLoading();
   return response;
 };
 
 /**
- * 响应拦截器 - 业务码处理
+ * 业务状态码响应拦截器
  */
-export const businessCodeResponseInterceptor = async <T>(response: IApiResponse<T>): Promise<IApiResponse<T>> => {
-  if (response.code !== undefined && response.code !== 200 && response.code !== 0) {
+export const businessCodeResponseInterceptor = async <T>(response: ApiResponse<T>): Promise<ApiResponse<T>> => {
+  if (!response.success) {
     message.error(response.message || '操作失败');
-    throw new Error(response.message || '操作失败');
   }
   return response;
 };
 
 /**
- * 错误拦截器 - 统一错误处理
+ * 错误处理拦截器
  */
-export const errorHandlerInterceptor = async (error: ApiError): Promise<never> => {
+export const errorHandlerInterceptor = async (error: ApiErrorResponse): Promise<ApiErrorResponse> => {
   useUIStore.getState().hideLoading();
   
-  const { code, message: errMsg } = error;
-  
-  // 使用新的错误处理机制
-  let appError;
-  
-  switch (code) {
-    case 401:
-      appError = createError.auth(errMsg || '未授权，请登录');
-      useUserStore.getState().clearUser();
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
-      }
-      break;
-    
-    case 403:
-      appError = createError.forbidden(errMsg || '没有权限访问');
-      break;
-    
-    case 404:
-      appError = createError.notFound(errMsg || '请求的资源不存在');
-      break;
-    
-    case 408:
-      appError = createError.network(errMsg || '请求超时');
-      break;
-    
-    case 500:
-      appError = createError.server(errMsg || '服务器错误');
-      break;
-    
-    default:
-      appError = createError.network(errMsg || '请求失败');
+  // 处理认证错误
+   if (error.statusCode === 401) {
+     const userStore = useUserStore.getState();
+     userStore.clearUser();
+     message.error('登录已过期，请重新登录');
+     // 重定向到登录页
+     if (typeof window !== 'undefined') {
+       window.location.href = '/login';
+     }
+     return error;
+   }
+
+  // 处理权限错误
+  if (error.statusCode === 403) {
+    message.error('权限不足，无法执行此操作');
+    return error;
   }
-  
+
+  // 处理服务器错误
+  if (error.statusCode >= 500) {
+    message.error('服务器错误，请稍后重试');
+    // 记录错误日志
+    console.error('[Server Error]:', error);
+    return error;
+  }
+
+  // 处理网络错误
+  if (error.message?.includes('Network Error') || error.message?.includes('fetch')) {
+    message.error('网络连接失败，请检查网络设置');
+    return error;
+  }
+
+  // 处理其他业务错误
+  if (error.message) {
+    message.error(error.message);
+  } else {
+    message.error('操作失败，请重试');
+  }
+
   // 使用全局错误处理器
-  globalErrorHandler.handle(appError, {
-    apiError: true,
-    statusCode: code,
-    originalError: error,
-  });
-  
-  throw appError;
+   globalErrorHandler.handle(createError.business(error.message || '未知错误', error.statusCode?.toString() || 'UNKNOWN'), {
+     originalError: error,
+   });
+
+  return error;
 };
 
 /**
- * 日志请求拦截器
+ * 请求日志拦截器
  */
-export const logRequestInterceptor = async (config: IRequestConfig): Promise<IRequestConfig> => {
+export const logRequestInterceptor = async (config: RequestConfig): Promise<RequestConfig> => {
   if (process.env.NODE_ENV === 'development') {
     console.log('[API Request]:', config);
   }

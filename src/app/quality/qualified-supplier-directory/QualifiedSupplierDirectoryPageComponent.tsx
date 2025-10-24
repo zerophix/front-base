@@ -111,9 +111,8 @@ const tableConfig: IEditableTableConfig<SupplierRow> = {
 export default function QualifiedSupplierDirectoryPage() {
   const [form] = Form.useForm();
   
-  // 从路由配置获取页面元信息
-  const routeMeta = useRouteMeta();
-  usePageConfig(routeMeta);
+  // 从路由配置获取页面元信息并设置到全局store
+  useRouteMeta();
   
   // 使用useRef来保持key计数器的稳定性
   const keyCounterRef = React.useRef(0);

@@ -3,8 +3,8 @@
  * 定义所有服务相关的接口和类型
  */
 
-import type { MenuItem, MenuTree, SearchResult, SearchState } from './sidebar';
-import type { RouteConfig, RoutePath } from './routes';
+import type { MenuItem, MenuTree, SearchResult, SearchState } from '@/types/sidebar';
+import type { RouteConfig, RoutePath } from '@/types/routes';
 
 /**
  * 基础服务接口

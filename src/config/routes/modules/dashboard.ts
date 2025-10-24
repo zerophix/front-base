@@ -1,5 +1,5 @@
 import type { RouteConfig } from '@/config/routes';
-import { createChildRoutes } from '../utils';
+import { createChildRoutes } from '@/config/routes/utils';
 
 export const dashboardRoutes: RouteConfig[] = createChildRoutes('project', [
   {

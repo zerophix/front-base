@@ -5,70 +5,39 @@ import { useRouter } from 'next/navigation';
 
 /**
  * 预加载策略组件
- * 根据用户当前位置智能预加载相关页面
+ * 使用更安全的预加载策略，避免触发 webpack 模块加载错误
  */
 export function PreloadStrategy() {
   const router = useRouter();
 
   useEffect(() => {
-    // 预加载策略：根据当前路径预加载相关页面
-    const currentPath = window.location.pathname;
-    
-    // 通用预加载：首页和主要模块页面
-    const commonRoutes = ['/home', '/data', '/equipment', '/personnel', '/quality', '/project'];
-    
-    // 根据当前模块预加载子页面
-    let moduleRoutes: string[] = [];
-    
-    if (currentPath.startsWith('/data')) {
-      moduleRoutes = [
-        '/data/detection-objects',
-        '/data/detection-params', 
-        '/data/parameter-code',
-        '/data/statistics-analysis'
-      ];
-    } else if (currentPath.startsWith('/equipment')) {
-      moduleRoutes = [
-        '/equipment/device',
-        '/equipment/new',
-        '/equipment/calibration',
-        '/equipment/maintenance-plan'
-      ];
-    } else if (currentPath.startsWith('/personnel')) {
-      moduleRoutes = [
-        '/personnel/list',
-        '/personnel/registration',
-        '/personnel/training',
-        '/personnel/qualification'
-      ];
-    } else if (currentPath.startsWith('/quality')) {
-      moduleRoutes = [
-        '/quality/contract-review',
-        '/quality/supervision-plan',
-        '/quality/nonconformity',
-        '/quality/environment'
-      ];
-    } else if (currentPath.startsWith('/project')) {
-      moduleRoutes = [
-        '/project/new',
-        '/project/task',
-        '/project/station',
-        '/project/task-management'
-      ];
+    // 在开发环境中禁用预加载，避免 webpack 热更新冲突
+    if (process.env.NODE_ENV === 'development') {
+      return;
     }
 
-    // 延迟预加载，避免影响当前页面性能
+    // 只在生产环境中进行有限的预加载
+    const currentPath = window.location.pathname;
+    
+    // 仅预加载最关键的路由
+    const criticalRoutes = ['/home'];
+    
+    // 延迟预加载，确保页面完全加载后再进行
     const preloadTimer = setTimeout(() => {
-      const routesToPreload = [...commonRoutes, ...moduleRoutes]
-        .filter(route => route !== currentPath); // 排除当前页面
+      const routesToPreload = criticalRoutes.filter(route => route !== currentPath);
 
       routesToPreload.forEach((route, index) => {
-        // 分批预加载，避免一次性加载过多
+        // 使用更长的延迟，避免并发问题
         setTimeout(() => {
-          router.prefetch(route);
-        }, index * 100); // 每100ms预加载一个
+          try {
+            router.prefetch(route);
+          } catch (error) {
+            // 静默处理预加载错误，不影响主要功能
+            console.warn('预加载失败:', route, error);
+          }
+        }, (index + 1) * 2000); // 每2秒预加载一个
       });
-    }, 1000); // 页面加载完成1秒后开始预加载
+    }, 3000); // 页面加载完成3秒后开始预加载
 
     return () => clearTimeout(preloadTimer);
   }, [router]);

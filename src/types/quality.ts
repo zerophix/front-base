@@ -2,7 +2,7 @@
  * 质量管理模块类型定义
  */
 
-import { IBaseRecord } from './common';
+import { IBaseRecord } from '@/types/common';
 
 /**
  * 标准物质信息

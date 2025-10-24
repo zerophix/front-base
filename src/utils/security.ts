@@ -3,6 +3,40 @@
  * 提供XSS、CSRF防护和输入验证
  */
 
+// 兼容 SSR 和客户端环境的 crypto 导入
+const getCrypto = () => {
+  if (typeof window !== 'undefined' && window.crypto) {
+    // 浏览器环境
+    return window.crypto;
+  } else if (typeof globalThis !== 'undefined' && globalThis.crypto) {
+    // Node.js 18+ 环境
+    return globalThis.crypto;
+  } else {
+    // 回退到 Node.js crypto 模块
+    try {
+      const nodeCrypto = require('crypto');
+      return {
+        getRandomValues: (array: Uint8Array) => {
+          const buffer = nodeCrypto.randomBytes(array.length);
+          array.set(buffer);
+          return array;
+        }
+      };
+    } catch (error) {
+      console.warn('Crypto not available, using fallback');
+      return {
+        getRandomValues: (array: Uint8Array) => {
+          // 简单的伪随机数生成器作为最后的回退
+          for (let i = 0; i < array.length; i++) {
+            array[i] = Math.floor(Math.random() * 256);
+          }
+          return array;
+        }
+      };
+    }
+  }
+};
+
 /**
  * XSS 防护 - HTML 转义
  */
@@ -161,6 +195,7 @@ export const escapeSql = (str: string): string => {
  */
 export const generateCsrfToken = (): string => {
   const array = new Uint8Array(32);
+  const crypto = getCrypto();
   crypto.getRandomValues(array);
   return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
 };
@@ -499,20 +534,20 @@ const detectJWTManipulation = (token: string): boolean => {
         }
         
       } catch {
-          // 无法解析payload，可能是恶意构造的
-          return true;
-        }
-        
-      } catch {
-        // 无法解析header，可能是恶意构造的
+        // 无法解析payload，可能是恶意构造的
         return true;
       }
       
-      return false;
     } catch {
-      // 解析失败，认为是恶意的
+      // 无法解析header，可能是恶意构造的
       return true;
     }
+    
+    return false;
+  } catch {
+    // 解析失败，认为是恶意的
+    return true;
+  }
 };
 
 /**
@@ -1194,6 +1229,7 @@ export const preventClickjacking = (): void => {
  */
 export const generateCSPNonce = (): string => {
   const array = new Uint8Array(16);
+  const crypto = getCrypto();
   crypto.getRandomValues(array);
   return btoa(String.fromCharCode(...array));
 };

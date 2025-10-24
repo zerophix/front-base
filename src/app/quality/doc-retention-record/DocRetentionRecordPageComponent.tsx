@@ -23,12 +23,11 @@ type RetentionRow = {
 };
 
 export default function DocRetentionRecordPage() {
-  const keyCounter = useRef(0);
-
-  // 数据记录表格
+  const [form] = Form.useForm();
+  
   const { dataSource, setDataSource, createDefaultRow } = useTableData<RetentionRow>({
     createDefaultRow: () => ({
-      key: `item_${++keyCounter.current}`,
+      key: Date.now().toString(),
       docCode: '',
       docName: '',
       version: '',
@@ -44,7 +43,7 @@ export default function DocRetentionRecordPage() {
 
   // 表单提交
   const { submitting, saving, handleSubmit, handleSave } = useFormSubmit({
-    form: null as any,
+    form,
     onSubmit: async (values) => {
       const data = {
         ...values,

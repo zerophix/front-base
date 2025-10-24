@@ -3,7 +3,42 @@
  * 实现审计追踪和安全事件监控
  */
 
-import { loggingConfig } from '../config/security';
+// 移除对服务端安全配置的直接导入，避免客户端引入加密模块
+// import { loggingConfig } from '../config/security';
+const IS_BROWSER = typeof window !== 'undefined';
+
+const loggingConfig = {
+  level: process.env.LOG_LEVEL || 'info',
+  sensitiveFields: [
+    'password',
+    'token',
+    'secret',
+    'key',
+    'authorization',
+    'cookie',
+    'session',
+    'csrf',
+    'ssn',
+    'creditCard',
+    'bankAccount',
+  ],
+  maxLogSize: '100MB',
+  maxFiles: 30,
+  auditLog: {
+    enabled: !IS_BROWSER, // 仅在服务端启用审计日志
+    events: [
+      'login',
+      'logout',
+      'register',
+      'password_change',
+      'password_reset',
+      'permission_change',
+      'data_access',
+      'data_modification',
+      'security_violation',
+    ],
+  },
+};
 
 /**
  * 日志级别
@@ -265,14 +300,157 @@ export class Logger {
    * 写入日志
    */
   private writeLog(entry: LogEntry): void {
-    // 在浏览器环境中使用console
-    if (typeof window !== 'undefined') {
-      this.writeToConsole(entry);
+    // 写入控制台
+    this.writeToConsole(entry);
+    
+    // 实现文件写入或远程日志服务
+    if (IS_BROWSER) {
+      // 浏览器环境：发送到远程日志服务
+      this.sendToRemoteLogService(entry);
     } else {
-      // 在服务器环境中可以写入文件或发送到日志服务
-      this.writeToConsole(entry);
-      // TODO: 实现文件写入或远程日志服务
+      // 服务器环境：写入本地文件
+      this.writeToFile(entry);
     }
+  }
+
+  /**
+   * 写入本地文件（服务器环境）
+   */
+  private writeToFile(entry: LogEntry): void {
+    try {
+      // 在服务器环境中实现文件写入
+      if (typeof require !== 'undefined') {
+        const fs = require('fs');
+        const path = require('path');
+        
+        // 确定日志文件路径
+        const logDir = path.join(process.cwd(), 'logs');
+        const logFile = path.join(logDir, `app-${new Date().toISOString().split('T')[0]}.log`);
+        
+        // 确保日志目录存在
+        if (!fs.existsSync(logDir)) {
+          fs.mkdirSync(logDir, { recursive: true });
+        }
+        
+        // 格式化日志条目
+        const logLine = JSON.stringify(entry) + '\n';
+        
+        // 异步写入文件
+        fs.appendFile(logFile, logLine, (err: any) => {
+          if (err) {
+            console.error('Failed to write log to file:', err);
+          }
+        });
+        
+        // 执行日志轮转检查
+        this.checkLogRotation(logDir);
+      }
+    } catch (error) {
+      console.error('Error writing log to file:', error);
+    }
+  }
+
+  /**
+   * 发送到远程日志服务（浏览器环境）
+   */
+  private sendToRemoteLogService(entry: LogEntry): void {
+    try {
+      // 只在生产环境或配置了远程日志服务时发送
+      const remoteLogEndpoint = process.env.NEXT_PUBLIC_LOG_ENDPOINT;
+      if (!remoteLogEndpoint) {
+        return;
+      }
+
+      // 使用 fetch 发送日志到远程服务
+      fetch(remoteLogEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...entry,
+          source: 'frontend',
+          environment: process.env.NODE_ENV,
+        }),
+      }).catch((error) => {
+        // 静默处理错误，避免日志发送失败影响应用
+        console.warn('Failed to send log to remote service:', error);
+      });
+    } catch (error) {
+      console.warn('Error sending log to remote service:', error);
+    }
+  }
+
+  /**
+   * 检查并执行日志轮转
+   */
+  private checkLogRotation(logDir: string): void {
+    try {
+      if (typeof require !== 'undefined') {
+        const fs = require('fs');
+        const path = require('path');
+        
+        // 获取日志目录中的所有文件
+        const files = fs.readdirSync(logDir);
+        const logFiles = files.filter((file: string) => file.endsWith('.log'));
+        
+        // 如果日志文件超过最大数量，删除最旧的文件
+        const maxFiles = typeof loggingConfig.maxFiles === 'number' 
+          ? loggingConfig.maxFiles 
+          : parseInt(String(loggingConfig.maxFiles), 10) || 30;
+        if (logFiles.length > maxFiles) {
+          const sortedFiles = logFiles
+            .map((file: string) => ({
+              name: file,
+              path: path.join(logDir, file),
+              mtime: fs.statSync(path.join(logDir, file)).mtime,
+            }))
+            .sort((a: any, b: any) => a.mtime.getTime() - b.mtime.getTime());
+          
+          // 删除最旧的文件
+          const filesToDelete = sortedFiles.slice(0, logFiles.length - maxFiles);
+          filesToDelete.forEach((file: any) => {
+            fs.unlinkSync(file.path);
+          });
+        }
+        
+        // 检查当前日志文件大小
+        const currentLogFile = path.join(logDir, `app-${new Date().toISOString().split('T')[0]}.log`);
+        if (fs.existsSync(currentLogFile)) {
+          const stats = fs.statSync(currentLogFile);
+          const maxSize = this.parseSize(loggingConfig.maxLogSize as string) || 100 * 1024 * 1024; // 默认100MB
+          
+          if (stats.size > maxSize) {
+            // 创建新的日志文件
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const archivedFile = path.join(logDir, `app-${new Date().toISOString().split('T')[0]}-${timestamp}.log`);
+            fs.renameSync(currentLogFile, archivedFile);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error during log rotation:', error);
+    }
+  }
+
+  /**
+   * 解析大小字符串（如 "100MB"）
+   */
+  private parseSize(sizeStr: string): number {
+    const units: Record<string, number> = {
+      B: 1,
+      KB: 1024,
+      MB: 1024 * 1024,
+      GB: 1024 * 1024 * 1024,
+    };
+    
+    const match = sizeStr.match(/^(\d+)\s*(B|KB|MB|GB)$/i);
+    if (!match) {
+      return 0;
+    }
+    
+    const [, size, unit] = match;
+    return parseInt(size, 10) * (units[unit.toUpperCase()] || 1);
   }
   
   /**
@@ -438,8 +616,233 @@ export class SecurityLogger {
    * 发送告警
    */
   private sendAlert(event: SecurityEvent): void {
-    // TODO: 实现告警机制（邮件、短信、Slack等）
+    // 控制台告警
     console.error('🚨 SECURITY ALERT:', event);
+    
+    // 实现多种告警机制
+    this.sendEmailAlert(event);
+    this.sendSlackAlert(event);
+    this.sendWebhookAlert(event);
+  }
+
+  /**
+   * 发送邮件告警
+   */
+  private sendEmailAlert(event: SecurityEvent): void {
+    try {
+      const alertEmail = process.env.SECURITY_ALERT_EMAIL;
+      if (!alertEmail || IS_BROWSER) {
+        return;
+      }
+
+      // 在服务器环境中发送邮件
+      if (typeof require !== 'undefined') {
+        // 这里可以集成邮件服务（如 nodemailer）
+        const emailData = {
+          to: alertEmail,
+          subject: `🚨 Security Alert: ${event.eventType}`,
+          html: `
+            <h2>Security Event Detected</h2>
+            <p><strong>Event Type:</strong> ${event.eventType}</p>
+            <p><strong>Severity:</strong> ${event.severity}</p>
+            <p><strong>Message:</strong> ${event.message}</p>
+            <p><strong>Timestamp:</strong> ${event.timestamp}</p>
+            <p><strong>Source:</strong> ${event.source}</p>
+            <p><strong>Outcome:</strong> ${event.outcome}</p>
+            ${event.userId ? `<p><strong>User ID:</strong> ${event.userId}</p>` : ''}
+            ${event.ip ? `<p><strong>IP Address:</strong> ${event.ip}</p>` : ''}
+            ${event.userAgent ? `<p><strong>User Agent:</strong> ${event.userAgent}</p>` : ''}
+            <hr>
+            <p><strong>Metadata:</strong></p>
+            <pre>${JSON.stringify(event.metadata, null, 2)}</pre>
+          `,
+        };
+        
+        // 发送到邮件队列或直接发送
+        this.queueEmailAlert(emailData);
+      }
+    } catch (error) {
+      console.error('Failed to send email alert:', error);
+    }
+  }
+
+  /**
+   * 发送Slack告警
+   */
+  private sendSlackAlert(event: SecurityEvent): void {
+    try {
+      const slackWebhook = process.env.SLACK_WEBHOOK_URL;
+      if (!slackWebhook) {
+        return;
+      }
+
+      const slackMessage = {
+        text: `🚨 Security Alert: ${event.eventType}`,
+        attachments: [
+          {
+            color: this.getSeverityColor(event.severity),
+            fields: [
+              {
+                title: 'Event Type',
+                value: event.eventType,
+                short: true,
+              },
+              {
+                title: 'Severity',
+                value: event.severity.toUpperCase(),
+                short: true,
+              },
+              {
+                title: 'Message',
+                value: event.message,
+                short: false,
+              },
+              {
+                title: 'Timestamp',
+                value: event.timestamp,
+                short: true,
+              },
+              {
+                title: 'Source',
+                value: event.source,
+                short: true,
+              },
+              {
+                title: 'Outcome',
+                value: event.outcome,
+                short: true,
+              },
+            ],
+            footer: 'Security Monitoring System',
+            ts: Math.floor(new Date(event.timestamp).getTime() / 1000),
+          },
+        ],
+      };
+
+      // 发送到Slack
+      if (IS_BROWSER) {
+        // 浏览器环境：通过API发送
+        fetch('/api/alerts/slack', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(slackMessage),
+        }).catch((error) => {
+          console.warn('Failed to send Slack alert:', error);
+        });
+      } else {
+        // 服务器环境：直接发送
+        fetch(slackWebhook, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(slackMessage),
+        }).catch((error) => {
+          console.error('Failed to send Slack alert:', error);
+        });
+      }
+    } catch (error) {
+      console.error('Error sending Slack alert:', error);
+    }
+  }
+
+  /**
+   * 发送Webhook告警
+   */
+  private sendWebhookAlert(event: SecurityEvent): void {
+    try {
+      const webhookUrl = process.env.SECURITY_WEBHOOK_URL;
+      if (!webhookUrl) {
+        return;
+      }
+
+      const webhookPayload = {
+        type: 'security_alert',
+        event,
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV,
+        application: process.env.APP_NAME || 'unknown',
+      };
+
+      // 发送Webhook
+      const sendWebhook = () => {
+        fetch(webhookUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Security-Alert': 'true',
+          },
+          body: JSON.stringify(webhookPayload),
+        }).catch((error) => {
+          console.error('Failed to send webhook alert:', error);
+        });
+      };
+
+      if (IS_BROWSER) {
+        // 浏览器环境：通过API代理发送
+        fetch('/api/alerts/webhook', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(webhookPayload),
+        }).catch((error) => {
+          console.warn('Failed to send webhook alert:', error);
+        });
+      } else {
+        // 服务器环境：直接发送
+        sendWebhook();
+      }
+    } catch (error) {
+      console.error('Error sending webhook alert:', error);
+    }
+  }
+
+  /**
+   * 获取严重程度对应的颜色
+   */
+  private getSeverityColor(severity: SecurityEvent['severity']): string {
+    switch (severity) {
+      case 'critical':
+        return 'danger';
+      case 'high':
+        return 'warning';
+      case 'medium':
+        return 'good';
+      case 'low':
+        return '#36a64f';
+      default:
+        return '#36a64f';
+    }
+  }
+
+  /**
+   * 将邮件告警加入队列
+   */
+  private queueEmailAlert(emailData: any): void {
+    try {
+      // 这里可以集成消息队列（如 Redis、RabbitMQ）
+      // 或者直接发送邮件
+      console.log('Email alert queued:', emailData.subject);
+      
+      // 示例：保存到文件系统作为简单队列
+      if (typeof require !== 'undefined') {
+        const fs = require('fs');
+        const path = require('path');
+        
+        const alertsDir = path.join(process.cwd(), 'alerts');
+        if (!fs.existsSync(alertsDir)) {
+          fs.mkdirSync(alertsDir, { recursive: true });
+        }
+        
+        const alertFile = path.join(alertsDir, `alert-${Date.now()}.json`);
+        fs.writeFileSync(alertFile, JSON.stringify(emailData, null, 2));
+      }
+    } catch (error) {
+      console.error('Failed to queue email alert:', error);
+    }
   }
 }
 

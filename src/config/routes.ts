@@ -7,15 +7,15 @@
  * - 单一职责：一处配置，多处使用
  * - 类型安全：完整的 TypeScript 类型定义
  */
-import { projectRoutes } from './routes/modules/project';
-import { personnelRoutes } from './routes/modules/personnel';
-import { qualityRoutes } from './routes/modules/quality';
-import { dataRoutes } from './routes/modules/data';
-import { equipmentRoutes } from './routes/modules/equipment';
-import { dashboardRoutes } from './routes/modules/dashboard';
-import { homeRoutes } from './routes/modules/home';
-import { recordsRoutes } from './routes/modules/records';
-import { contractRoutes } from './routes/modules/contract';
+import { projectRoutes } from '@/config/routes/modules/project';
+import { personnelRoutes } from '@/config/routes/modules/personnel';
+import { qualityRoutes } from '@/config/routes/modules/quality';
+import { dataRoutes } from '@/config/routes/modules/data';
+import { equipmentRoutes } from '@/config/routes/modules/equipment';
+import { dashboardRoutes } from '@/config/routes/modules/dashboard';
+import { homeRoutes } from '@/config/routes/modules/home';
+import { recordsRoutes } from '@/config/routes/modules/records';
+import { contractRoutes } from '@/config/routes/modules/contract';
 import type { IconName } from '@/config/icons';
 
 export interface BreadcrumbItem {

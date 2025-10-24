@@ -9,7 +9,7 @@ import { IEditableRow, IEditableTableConfig, FieldType } from '@/types/form';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useRouteMeta } from '@/hooks';
-import { SIZES } from '@/utils/constants/dimensions';
+import { SIZES, SPACING } from '@/utils/constants/dimensions';
 
 interface SampleDetail {
   key: string;

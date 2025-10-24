@@ -4,7 +4,7 @@
  */
 
 import type { RouteConfig, ModuleType, BreadcrumbItem } from '@/types/routes';
-import { createError, globalErrorHandler } from './errorHandler';
+import { createError, globalErrorHandler } from '@/utils/errorHandler';
 
 /**
  * 路由配置验证结果

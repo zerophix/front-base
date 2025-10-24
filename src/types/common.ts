@@ -35,7 +35,7 @@ export interface IApiResponse<T = any> {
 /**
  * 通用ID类型
  */
-export type ID = string | number;
+export type ID = string;
 
 /**
  * 通用记录基础接口

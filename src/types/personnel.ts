@@ -2,7 +2,7 @@
  * 人员管理模块类型定义
  */
 
-import { IBaseRecord } from './common';
+import { IBaseRecord } from '@/types/common';
 
 /**
  * 人员基本信息

@@ -21,6 +21,7 @@ type CalibrationRecordRow = {
 
 export default function EquipmentCalibrationRecordPage() {
   const keyCounter = useRef(0);
+  const [form] = Form.useForm();
 
   // 从路由派生页面元信息并写入全局（单一数据源）
   useRouteMeta();
@@ -41,7 +42,7 @@ export default function EquipmentCalibrationRecordPage() {
 
   // 表单提交
   const { submitting, saving, handleSubmit, handleSave } = useFormSubmit({
-    form: null as any,
+    form,
     onSubmit: async (values) => {
       const data = {
         ...values,

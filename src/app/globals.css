@@ -16,9 +16,10 @@
   --shadow-primary: 0 2px 4px rgba(114, 46, 209, 0.25);
 
   /* Text Colors (preferred and legacy aliases) */
-  --color-text: #333333;
-  --color-text-secondary: #666666;
-  --color-text-tertiary: #999999;
+  --color-text: #262626;
+  --color-text-secondary: #8c8c8c;
+  --color-text-tertiary: #8c8c8c;
+  --color-text-quaternary: #bfbfbf;
 
   /* Legacy alias mappings (compatibility) */
   --text-color: var(--color-text);
@@ -29,6 +30,17 @@
   --color-bg: #ffffff;
   --color-bg-muted: #fafafa;
   --color-bg-highlight: #f9f0ff;
+  --color-bg-subtle: #f8f9fa;
+  --color-bg-elevated: #ffffff;
+
+  /* Primary color variants */
+  --color-primary-light: #b37feb;
+  --color-primary-lighter: #d3adf7;
+  --color-primary-lightest: #efdbff;
+
+  /* Interactive states */
+  --color-hover-bg: rgba(0, 0, 0, 0.04);
+  --color-active-bg: rgba(0, 0, 0, 0.06);
 
   /* 功能性颜色 */
   --color-success: #52c41a;
@@ -42,12 +54,37 @@
   /* Borders */
   --color-border: #e8e8e8;
   --color-border-subtle: #d9d9d9;
+  --color-border-light: #f0f0f0;
 
   /* Legacy border alias */
   --border-color: var(--color-border);
 
   /* Radius */
-  --radius-sm: 6px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* Shadows */
+  --shadow-primary-active: rgba(22, 119, 255, 0.2);
+  --shadow-subtle: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-minimal: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-elevated: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  /* Primary background variants */
+  --color-primary-bg: #e6f4ff;
+
+  /* Gradients */
+  --gradient-avatar: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+  /* White color variants */
+  --color-white: #ffffff;
+  --color-white-75: rgba(255, 255, 255, 0.75);
+  --color-white-90: rgba(255, 255, 255, 0.9);
+
+  /* Shadow variants */
+  --shadow-welcome: 0 10px 24px rgba(118, 75, 162, 0.25);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
 
   /* Table */
   --table-header-bg: #f9f0ff;
@@ -57,8 +94,42 @@
   --home-card-primary: var(--color-primary);
   --home-card-success: var(--color-success);
   --home-card-warning: var(--color-warning);
-  --home-card-purple: #eb2f96;
-  --home-card-pink: #f5222d;
+  --home-card-purple: #722ed1;
+  --home-card-pink: #eb2f96;
+
+/* 统计数据颜色类 */
+.statistic-primary .ant-statistic-content-value {
+  color: var(--color-primary) !important;
+}
+
+.statistic-success .ant-statistic-content-value {
+  color: var(--color-success) !important;
+}
+
+.statistic-warning .ant-statistic-content-value {
+  color: var(--color-warning) !important;
+}
+
+/* 快速操作图标颜色类 */
+.action-icon-primary {
+  color: var(--home-card-primary) !important;
+}
+
+.action-icon-success {
+  color: var(--home-card-success) !important;
+}
+
+.action-icon-warning {
+  color: var(--home-card-warning) !important;
+}
+
+.action-icon-purple {
+  color: var(--home-card-purple) !important;
+}
+
+.action-icon-pink {
+  color: var(--home-card-pink) !important;
+}
 
   /* Spacing Scale */
   --spacing-xs: 4px;

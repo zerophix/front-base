@@ -95,7 +95,7 @@ export const BaseFormPage: React.FC<BaseFormPageProps> = ({
     <MainLayout>
       <FormPageContainer
         title={pageTitle}
-        breadcrumbItems={breadcrumbs}
+        breadcrumbItems={breadcrumbs as Array<{ label: string; href?: string }>}
         recordNumber={recordNumber || undefined}
       >
         {content}
