@@ -36,8 +36,8 @@ export async function POST(request: NextRequest) {
     // 2. 测试数据加密和解密
     try {
       const testString = testData || 'Hello, this is a test encryption string!';
-      const encrypted = EncryptionUtils.encrypt(testString);
-      const decrypted = EncryptionUtils.decrypt(encrypted);
+      const encrypted = await EncryptionUtils.encrypt(testString);
+      const decrypted = await EncryptionUtils.decrypt(encrypted);
       
       if (decrypted === testString) {
         encryptionResults.data_encryption = {
@@ -84,8 +84,8 @@ export async function POST(request: NextRequest) {
     
     // 4. 测试安全令牌生成
     try {
-      const token1 = EncryptionUtils.generateSecureToken(32);
-      const token2 = EncryptionUtils.generateSecureToken(32);
+      const token1 = await EncryptionUtils.generateSecureToken(32);
+      const token2 = await EncryptionUtils.generateSecureToken(32);
       
       // base64url编码的32字节应该产生约43个字符
       if (token1.length > 40 && token2.length > 40 && token1 !== token2) {
@@ -108,8 +108,8 @@ export async function POST(request: NextRequest) {
     
     // 5. 测试安全环境变量访问
     try {
-      const jwtSecret = SecureEnvLoader.get('JWT_SECRET');
-      const encryptionKey = SecureEnvLoader.get('ENCRYPTION_KEY');
+      const jwtSecret = await SecureEnvLoader.get('JWT_SECRET');
+      const encryptionKey = await SecureEnvLoader.get('ENCRYPTION_KEY');
       
       if (jwtSecret && encryptionKey) {
         encryptionResults.env_variable_access = {

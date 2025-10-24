@@ -3,25 +3,23 @@
  * 集中管理所有安全相关的配置
  */
 
-import { SecureEnvLoader } from '@/utils/encryption';
-
 /**
  * JWT配置
  */
 export const jwtConfig = {
-  accessSecret: SecureEnvLoader.get('JWT_SECRET'),
-  refreshSecret: SecureEnvLoader.get('JWT_REFRESH_SECRET'),
-  accessExpiresIn: SecureEnvLoader.get('JWT_ACCESS_EXPIRES_IN', '15m'),
-  refreshExpiresIn: SecureEnvLoader.get('JWT_REFRESH_EXPIRES_IN', '7d'),
-  issuer: SecureEnvLoader.get('JWT_ISSUER', 'front-base-app'),
-  audience: SecureEnvLoader.get('JWT_AUDIENCE', 'front-base-users'),
+  accessSecret: process.env.JWT_SECRET || '',
+  refreshSecret: process.env.JWT_REFRESH_SECRET || '',
+  accessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m',
+  refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
+  issuer: process.env.JWT_ISSUER || 'front-base-app',
+  audience: process.env.JWT_AUDIENCE || 'front-base-users',
 };
 
 /**
- * CSRF配置
+ * CSRF保护配置
  */
 export const csrfConfig = {
-  secret: SecureEnvLoader.get('CSRF_SECRET'),
+  secret: process.env.CSRF_SECRET || '',
   cookieName: '_csrf',
   headerName: 'X-CSRF-Token',
   tokenLength: 32,
@@ -29,12 +27,12 @@ export const csrfConfig = {
 };
 
 /**
- * 会话配置
+ * Session配置
  */
 export const sessionConfig = {
-  secret: SecureEnvLoader.get('SESSION_SECRET'),
-  maxAge: SecureEnvLoader.getNumber('SESSION_MAX_AGE', 86400000), // 24小时
-  secure: SecureEnvLoader.getBoolean('SESSION_SECURE', process.env.NODE_ENV === 'production'),
+  secret: process.env.SESSION_SECRET || '',
+  maxAge: parseInt(process.env.SESSION_MAX_AGE || '86400000', 10), // 24小时
+  secure: process.env.SESSION_SECURE === 'true' || process.env.NODE_ENV === 'production',
   httpOnly: true,
   sameSite: 'strict' as const,
 };
@@ -59,8 +57,8 @@ export const passwordPolicy = {
  * 速率限制配置
  */
 export const rateLimitConfig = {
-  windowMs: SecureEnvLoader.getNumber('RATE_LIMIT_WINDOW_MS', 900000), // 15分钟
-  maxRequests: SecureEnvLoader.getNumber('RATE_LIMIT_MAX_REQUESTS', 100),
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10), // 15分钟
+  maxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100', 10),
   skipSuccessfulRequests: false,
   skipFailedRequests: false,
   standardHeaders: true,
@@ -90,11 +88,11 @@ export const rateLimitConfig = {
  * 文件上传安全配置
  */
 export const fileUploadConfig = {
-  maxSize: SecureEnvLoader.getNumber('UPLOAD_MAX_SIZE', 10485760), // 10MB
-  allowedTypes: SecureEnvLoader.get('UPLOAD_ALLOWED_TYPES', 'image/jpeg,image/png,image/gif,application/pdf').split(','),
-  uploadPath: SecureEnvLoader.get('UPLOAD_PATH', './uploads'),
-  virusScanEnabled: SecureEnvLoader.getBoolean('VIRUS_SCAN_ENABLED', false),
-  quarantinePath: SecureEnvLoader.get('QUARANTINE_PATH', './quarantine'),
+  maxSize: parseInt(process.env.UPLOAD_MAX_SIZE || '10485760', 10), // 10MB
+  allowedTypes: (process.env.UPLOAD_ALLOWED_TYPES || 'image/jpeg,image/png,image/gif,application/pdf').split(','),
+  uploadPath: process.env.UPLOAD_PATH || './uploads',
+  virusScanEnabled: process.env.VIRUS_SCAN_ENABLED === 'true',
+  quarantinePath: process.env.QUARANTINE_PATH || './quarantine',
   // 文件名安全配置
   sanitizeFilenames: true,
   maxFilenameLength: 255,
@@ -133,7 +131,7 @@ export const cspConfig = {
   ],
   connectSrc: [
     "'self'",
-    SecureEnvLoader.get('NEXT_PUBLIC_API_BASE_URL', 'http://localhost:3001'),
+    process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001',
   ],
   frameSrc: ["'none'"],
   objectSrc: ["'none'"],
@@ -145,7 +143,7 @@ export const cspConfig = {
   frameAncestors: ["'none'"],
   baseUri: ["'self'"],
   upgradeInsecureRequests: process.env.NODE_ENV === 'production',
-  reportUri: SecureEnvLoader.get('SECURITY_CSP_REPORT_URI', ''),
+  reportUri: process.env.SECURITY_CSP_REPORT_URI || '',
 };
 
 /**
@@ -153,22 +151,22 @@ export const cspConfig = {
  */
 export const httpsConfig = {
   hsts: {
-    maxAge: SecureEnvLoader.getNumber('SECURITY_HSTS_MAX_AGE', 31536000), // 1年
+    maxAge: parseInt(process.env.SECURITY_HSTS_MAX_AGE || '31536000', 10), // 1年
     includeSubDomains: true,
     preload: true,
   },
   forceHttps: process.env.NODE_ENV === 'production',
-  trustProxy: SecureEnvLoader.getBoolean('TRUST_PROXY', false),
+  trustProxy: process.env.TRUST_PROXY === 'true',
 };
 
 /**
- * 跨域配置
+ * CORS配置
  */
 export const corsConfig = {
   origin: process.env.NODE_ENV === 'production' 
-    ? [SecureEnvLoader.get('PRODUCTION_DOMAIN', 'https://front-base.vercel.app')]
+    ? [process.env.PRODUCTION_DOMAIN || 'https://front-base.vercel.app']
     : [
-        SecureEnvLoader.get('NEXT_PUBLIC_DEV_DOMAIN', 'http://localhost:3001'),
+        process.env.NEXT_PUBLIC_DEV_DOMAIN || 'http://localhost:3001',
         'http://localhost:3000',
         'http://127.0.0.1:3000',
         'http://127.0.0.1:3001'
@@ -189,10 +187,10 @@ export const corsConfig = {
 };
 
 /**
- * 日志安全配置
+ * 日志配置
  */
 export const loggingConfig = {
-  level: SecureEnvLoader.get('LOG_LEVEL', 'info'),
+  level: process.env.LOG_LEVEL || 'info',
   sensitiveFields: [
     'password',
     'token',
@@ -228,9 +226,9 @@ export const loggingConfig = {
  * 数据库安全配置
  */
 export const databaseConfig = {
-  ssl: SecureEnvLoader.getBoolean('DATABASE_SSL', process.env.NODE_ENV === 'production'),
-  poolMin: SecureEnvLoader.getNumber('DATABASE_POOL_MIN', 2),
-  poolMax: SecureEnvLoader.getNumber('DATABASE_POOL_MAX', 10),
+  ssl: process.env.DATABASE_SSL === 'true' || process.env.NODE_ENV === 'production',
+  poolMin: parseInt(process.env.DATABASE_POOL_MIN || '2', 10),
+  poolMax: parseInt(process.env.DATABASE_POOL_MAX || '10', 10),
   connectionTimeout: 30000,
   idleTimeout: 300000,
   // 查询超时
@@ -240,11 +238,11 @@ export const databaseConfig = {
 };
 
 /**
- * 监控和告警配置
+ * 监控配置
  */
 export const monitoringConfig = {
-  sentryDsn: SecureEnvLoader.get('SENTRY_DSN', ''),
-  analyticsId: SecureEnvLoader.get('ANALYTICS_ID', ''),
+  sentryDsn: process.env.SENTRY_DSN || '',
+  analyticsId: process.env.ANALYTICS_ID || '',
   healthCheckInterval: 60000, // 1分钟
   alertThresholds: {
     errorRate: 0.05, // 5%错误率
